@@ -15,11 +15,13 @@ public class PlayerController : CelestialBody
     
     [Header("移动平衡")]
     [Tooltip("质量对移动力的影响程度（0-1，越小影响越小）")]
-    public float massImpactOnThrust = 0.3f;
+    public float massImpactOnThrust = 0.15f;  // 从 0.3 降低到 0.15
     [Tooltip("质量对最大速度的影响程度（0-1，越小影响越小）")]
-    public float massImpactOnSpeed = 0.2f;
+    public float massImpactOnSpeed = 0.1f;  // 从 0.2 降低到 0.1
     [Tooltip("基础速度倍率（越大整体移动越快）")]
-    public float baseSpeedMultiplier = 1.5f;
+    public float baseSpeedMultiplier = 2.5f;  // 从 1.5 提高到 2.5
+    [Tooltip("推力补偿倍率（越大大质量时加速越快）")]
+    public float thrustCompensationMultiplier = 0.8f;
     
     [Header("技能")]
     public bool canDash = true;
@@ -58,6 +60,12 @@ public class PlayerController : CelestialBody
         moveInput.x = Input.GetAxisRaw("Horizontal");
         moveInput.y = Input.GetAxisRaw("Vertical");
         
+        // 更新速度显示
+        if (rb != null)
+        {
+            UIManager.Instance?.UpdateVelocityDisplay(rb.velocity.magnitude);
+        }
+        
         // 冲刺（陨石阶段）
         if (Input.GetKeyDown(KeyCode.Space) && currentStage == EvolutionStage.Meteorite)
         {
@@ -79,6 +87,12 @@ public class PlayerController : CelestialBody
         {
             UseAbility();
         }
+        
+        // 切换操作提示（按 H 键）
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            UIManager.Instance?.ToggleControlHints();
+        }
     }
     
     /// <summary>
@@ -90,27 +104,55 @@ public class PlayerController : CelestialBody
         {
             Vector3 moveForce = new Vector3(moveInput.x, moveInput.y, 0) * thrustForce;
             
-            // 优化的移动力度计算：质量影响减弱
-            // 使用幂函数而非平方根，让大质量时衰减更平缓
+            // 优化的移动力度计算：质量影响大幅减弱
             float mobilityFactor = 1f / Mathf.Pow(mass, massImpactOnThrust);
             
-            // 质量越大，给予额外的推力补偿（模拟更强的引擎）
-            float massCompensation = 1f + Mathf.Log10(mass + 1) * 0.5f;
+            // 质量越大，给予更多的推力补偿
+            // 使用更激进的补偿公式，让大质量也能快速移动
+            float massCompensation = 1f + Mathf.Log10(mass + 1) * thrustCompensationMultiplier;
             
-            rb.AddForce(moveForce * mobilityFactor * massCompensation);
+            // 添加阶段加成：行星及以上阶段移动更快
+            float stageBonus = GetStageMovementBonus();
+            
+            rb.AddForce(moveForce * mobilityFactor * massCompensation * stageBonus);
         }
         
-        // 优化的最大速度计算：速度不会过度降低
-        // 基础速度 + 根据质量的调整（影响更温和）
+        // 优化的最大速度计算：大幅减少质量影响
         float speedPenalty = Mathf.Pow(mass, massImpactOnSpeed);
         float maxSpeed = (moveSpeed * baseSpeedMultiplier) / speedPenalty;
         
-        // 确保最低速度（即使质量很大也能移动）
-        maxSpeed = Mathf.Max(maxSpeed, moveSpeed * 0.3f);
+        // 提高最低速度保障（从 0.3 提高到 0.6）
+        maxSpeed = Mathf.Max(maxSpeed, moveSpeed * 0.6f);
         
         if (rb.velocity.magnitude > maxSpeed)
         {
             rb.velocity = rb.velocity.normalized * maxSpeed;
+        }
+    }
+    
+    /// <summary>
+    /// 获取阶段移动加成
+    /// </summary>
+    private float GetStageMovementBonus()
+    {
+        switch (currentStage)
+        {
+            case EvolutionStage.Meteorite:
+                return 1.0f;  // 陨石：正常速度
+            case EvolutionStage.SmallPlanet:
+                return 1.1f;  // 小行星：+10% 速度
+            case EvolutionStage.Planet:
+                return 1.3f;  // 行星：+30% 速度（重要！）
+            case EvolutionStage.Star:
+                return 1.5f;  // 恒星：+50% 速度
+            case EvolutionStage.RedGiant:
+            case EvolutionStage.NeutronStar:
+            case EvolutionStage.Pulsar:
+                return 1.7f;  // 高级阶段：+70% 速度
+            case EvolutionStage.BlackHole:
+                return 2.0f;  // 黑洞：+100% 速度（超快）
+            default:
+                return 1.0f;
         }
     }
     
@@ -210,6 +252,9 @@ public class PlayerController : CelestialBody
     protected override void TriggerEvolution()
     {
         base.TriggerEvolution();
+        
+        // 更新 UI 显示
+        UIManager.Instance?.UpdateStageDisplay(currentStage);
         
         // 播放进化特效
         Debug.Log($"玩家进化至: {currentStage}！");

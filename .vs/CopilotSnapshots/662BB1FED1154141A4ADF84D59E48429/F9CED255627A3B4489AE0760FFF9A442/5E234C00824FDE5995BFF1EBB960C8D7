@@ -1,0 +1,234 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+/// <summary>
+/// 玩家控制器
+/// </summary>
+public class PlayerController : CelestialBody
+{
+    [Header("控制设置")]
+    public float moveSpeed = 5f;
+    public float thrustForce = 10f;
+    public float dashSpeed = 20f;
+    public float dashCooldown = 2f;
+    
+    [Header("移动平衡")]
+    [Tooltip("质量对移动力的影响程度（0-1，越小影响越小）")]
+    public float massImpactOnThrust = 0.15f;  // 从 0.3 降低到 0.15
+    [Tooltip("质量对最大速度的影响程度（0-1，越小影响越小）")]
+    public float massImpactOnSpeed = 0.1f;  // 从 0.2 降低到 0.1
+    [Tooltip("基础速度倍率（越大整体移动越快）")]
+    public float baseSpeedMultiplier = 2.5f;  // 从 1.5 提高到 2.5
+    [Tooltip("推力补偿倍率（越大大质量时加速越快）")]
+    public float thrustCompensationMultiplier = 0.8f;
+    
+    [Header("技能")]
+    public bool canDash = true;
+    public bool canSplit = false; // 陨石阶段的分裂技能
+    public float strongGravityMultiplier = 3f;
+    
+    private float lastDashTime = -999f;
+    private bool isStrongGravityActive = false;
+    
+    // 输入
+    private Vector2 moveInput;
+    
+    protected override void Start()
+    {
+        base.Start();
+        
+        // 玩家默认开始为陨石
+        currentStage = EvolutionStage.Meteorite;
+        mass = 1f;
+        massToNextEvolution = 10f;
+        
+        // 摄像机跟随
+        Camera.main.GetComponent<CameraFollow>()?.SetTarget(transform);
+    }
+    
+    protected override void FixedUpdate()
+    {
+        base.FixedUpdate();
+        
+        HandleMovement();
+    }
+    
+    private void Update()
+    {
+        // 获取输入
+        moveInput.x = Input.GetAxisRaw("Horizontal");
+        moveInput.y = Input.GetAxisRaw("Vertical");
+        
+        // 更新速度显示
+        if (rb != null)
+        {
+            UIManager.Instance?.UpdateVelocityDisplay(rb.velocity.magnitude);
+        }
+        
+        // 冲刺（陨石阶段）
+        if (Input.GetKeyDown(KeyCode.Space) && currentStage == EvolutionStage.Meteorite)
+        {
+            TryDash();
+        }
+        
+        // 强引力波（按住）
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            ActivateStrongGravity();
+        }
+        else
+        {
+            DeactivateStrongGravity();
+        }
+        
+        // 技能释放（根据分支不同）
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            UseAbility();
+        }
+        
+        // 切换操作提示（按 H 键）
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            UIManager.Instance?.ToggleControlHints();
+        }
+    }
+    
+    /// <summary>
+    /// 处理移动
+    /// </summary>
+    private void HandleMovement()
+    {
+        if (moveInput.magnitude > 0.1f)
+        {
+            Vector3 moveForce = new Vector3(moveInput.x, moveInput.y, 0) * thrustForce;
+            
+            // 优化的移动力度计算：质量影响减弱
+            // 使用幂函数而非平方根，让大质量时衰减更平缓
+            float mobilityFactor = 1f / Mathf.Pow(mass, massImpactOnThrust);
+            
+            // 质量越大，给予额外的推力补偿（模拟更强的引擎）
+            float massCompensation = 1f + Mathf.Log10(mass + 1) * 0.5f;
+            
+            rb.AddForce(moveForce * mobilityFactor * massCompensation);
+        }
+        
+        // 优化的最大速度计算：速度不会过度降低
+        // 基础速度 + 根据质量的调整（影响更温和）
+        float speedPenalty = Mathf.Pow(mass, massImpactOnSpeed);
+        float maxSpeed = (moveSpeed * baseSpeedMultiplier) / speedPenalty;
+        
+        // 确保最低速度（即使质量很大也能移动）
+        maxSpeed = Mathf.Max(maxSpeed, moveSpeed * 0.3f);
+        
+        if (rb.velocity.magnitude > maxSpeed)
+        {
+            rb.velocity = rb.velocity.normalized * maxSpeed;
+        }
+    }
+    
+    /// <summary>
+    /// 尝试冲刺
+    /// </summary>
+    private void TryDash()
+    {
+        if (!canDash) return;
+        if (Time.time - lastDashTime < dashCooldown) return;
+        
+        Vector3 dashDirection = moveInput.magnitude > 0.1f 
+            ? new Vector3(moveInput.x, moveInput.y, 0).normalized 
+            : Vector3.right;
+        
+        // 冲刺力度随质量缩放，但添加基础值保证小质量时也有效
+        float dashForce = dashSpeed * Mathf.Max(mass, 5f);
+        rb.AddForce(dashDirection * dashForce, ForceMode.Impulse);
+        
+        lastDashTime = Time.time;
+        
+        Debug.Log($"冲刺！（质量: {mass:F1}）");
+    }
+    
+    /// <summary>
+    /// 激活强引力波
+    /// </summary>
+    private void ActivateStrongGravity()
+    {
+        if (!isStrongGravityActive)
+        {
+            isStrongGravityActive = true;
+            gravityStrength *= strongGravityMultiplier;
+        }
+    }
+    
+    /// <summary>
+    /// 停用强引力波
+    /// </summary>
+    private void DeactivateStrongGravity()
+    {
+        if (isStrongGravityActive)
+        {
+            isStrongGravityActive = false;
+            gravityStrength /= strongGravityMultiplier;
+        }
+    }
+    
+    /// <summary>
+    /// 使用技能
+    /// </summary>
+    private void UseAbility()
+    {
+        switch (planetBranch)
+        {
+            case PlanetBranch.IceFortress:
+                // 极寒光环 - 减速周围敌人
+                UseIceAura();
+                break;
+            case PlanetBranch.LifeCradle:
+                // 文明反击 - 发射导弹
+                UseCivilizationCounterattack();
+                break;
+            case PlanetBranch.WarPlanet:
+                // 轨道轰炸
+                UseOrbitalBombardment();
+                break;
+        }
+    }
+    
+    private void UseIceAura()
+    {
+        Debug.Log("释放极寒光环！");
+        // TODO: 实现减速效果
+    }
+    
+    private void UseCivilizationCounterattack()
+    {
+        Debug.Log("发射文明导弹！");
+        // TODO: 生成导弹
+    }
+    
+    private void UseOrbitalBombardment()
+    {
+        Debug.Log("轨道轰炸！");
+        // TODO: 发射高能粒子流
+    }
+    
+    public override void AddMass(float amount)
+    {
+        base.AddMass(amount);
+        
+        // UI 更新
+        UIManager.Instance?.UpdateMassDisplay(mass, massToNextEvolution);
+    }
+    
+    protected override void TriggerEvolution()
+    {
+        base.TriggerEvolution();
+        
+        // 更新 UI 显示
+        UIManager.Instance?.UpdateStageDisplay(currentStage);
+        
+        // 播放进化特效
+        Debug.Log($"玩家进化至: {currentStage}！");
+    }
+}

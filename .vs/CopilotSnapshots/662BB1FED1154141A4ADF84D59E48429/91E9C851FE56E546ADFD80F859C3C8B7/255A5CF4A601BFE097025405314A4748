@@ -1,0 +1,272 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+/// <summary>
+/// UI管理器 - 完整版
+/// </summary>
+public class UIManager : MonoBehaviour
+{
+    public static UIManager Instance { get; private set; }
+    
+    [Header("游戏信息显示")]
+    public Text massText;
+    public Text stageText;
+    public Slider evolutionSlider;
+    public Text velocityText;
+    public Text fpsText;
+    
+    [Header("分支选择界面")]
+    public GameObject branchSelectionPanel;
+    public Button iceFortressButton;
+    public Button lifeCradleButton;
+    public Button warPlanetButton;
+    
+    [Header("突变选择界面")]
+    public GameObject mutationSelectionPanel;
+    public Button mutationButton1;
+    public Button mutationButton2;
+    public Button mutationButton3;
+    public Text mutationText1;
+    public Text mutationText2;
+    public Text mutationText3;
+    
+    [Header("操作提示")]
+    public GameObject controlHintPanel;
+    public Text controlHintText;
+    
+    // 临时存储
+    private CelestialBody currentSelectingBody;
+    private List<Mutation> currentMutations;
+    
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+        
+        // 初始化：隐藏所有面板
+        if (branchSelectionPanel != null)
+            branchSelectionPanel.SetActive(false);
+        
+        if (mutationSelectionPanel != null)
+            mutationSelectionPanel.SetActive(false);
+    }
+    
+    private void Start()
+    {
+        // 绑定分支按钮事件
+        if (iceFortressButton != null)
+            iceFortressButton.onClick.AddListener(() => SelectBranch(0));
+        
+        if (lifeCradleButton != null)
+            lifeCradleButton.onClick.AddListener(() => SelectBranch(1));
+        
+        if (warPlanetButton != null)
+            warPlanetButton.onClick.AddListener(() => SelectBranch(2));
+        
+        // 绑定突变按钮事件
+        if (mutationButton1 != null)
+            mutationButton1.onClick.AddListener(() => SelectMutation(0));
+        
+        if (mutationButton2 != null)
+            mutationButton2.onClick.AddListener(() => SelectMutation(1));
+        
+        if (mutationButton3 != null)
+            mutationButton3.onClick.AddListener(() => SelectMutation(2));
+        
+        // 显示操作提示
+        ShowControlHints();
+    }
+    
+    private void Update()
+    {
+        // 更新 FPS
+        UpdateFPS();
+    }
+    
+    /// <summary>
+    /// 更新质量显示
+    /// </summary>
+    public void UpdateMassDisplay(float currentMass, float nextThreshold)
+    {
+        if (massText != null)
+        {
+            massText.text = $"质量: {currentMass:F1} / {nextThreshold:F0}";
+        }
+        
+        if (evolutionSlider != null)
+        {
+            evolutionSlider.value = Mathf.Clamp01(currentMass / nextThreshold);
+        }
+    }
+    
+    /// <summary>
+    /// 更新阶段显示
+    /// </summary>
+    public void UpdateStageDisplay(EvolutionStage stage)
+    {
+        if (stageText != null)
+        {
+            stageText.text = $"阶段: {GetStageName(stage)}";
+        }
+    }
+    
+    /// <summary>
+    /// 更新速度显示
+    /// </summary>
+    public void UpdateVelocityDisplay(float velocity)
+    {
+        if (velocityText != null)
+        {
+            velocityText.text = $"速度: {velocity:F1}";
+        }
+    }
+    
+    /// <summary>
+    /// 更新 FPS 显示
+    /// </summary>
+    private void UpdateFPS()
+    {
+        if (fpsText != null)
+        {
+            float fps = 1f / Time.unscaledDeltaTime;
+            fpsText.text = $"FPS: {fps:F0}";
+        }
+    }
+    
+    private string GetStageName(EvolutionStage stage)
+    {
+        switch (stage)
+        {
+            case EvolutionStage.Meteorite: return "陨石";
+            case EvolutionStage.SmallPlanet: return "小行星";
+            case EvolutionStage.Planet: return "行星";
+            case EvolutionStage.Star: return "恒星";
+            case EvolutionStage.RedGiant: return "红巨星";
+            case EvolutionStage.NeutronStar: return "中子星";
+            case EvolutionStage.Pulsar: return "脉冲星";
+            case EvolutionStage.BlackHole: return "黑洞";
+            default: return "未知";
+        }
+    }
+    
+    /// <summary>
+    /// 显示分支选择
+    /// </summary>
+    public void ShowBranchSelection(CelestialBody body)
+    {
+        currentSelectingBody = body;
+        
+        if (branchSelectionPanel != null)
+        {
+            branchSelectionPanel.SetActive(true);
+            Time.timeScale = 0f; // 暂停游戏
+            
+            Debug.Log("显示行星分支选择界面");
+        }
+    }
+    
+    /// <summary>
+    /// 选择行星分支
+    /// </summary>
+    public void SelectBranch(int branchIndex)
+    {
+        if (currentSelectingBody != null)
+        {
+            PlanetBranch branch = (PlanetBranch)(branchIndex + 1); // +1 跳过 None
+            currentSelectingBody.SetPlanetBranch(branch);
+            
+            Debug.Log($"选择了分支: {branch}");
+        }
+        
+        if (branchSelectionPanel != null)
+        {
+            branchSelectionPanel.SetActive(false);
+            Time.timeScale = 1f; // 恢复游戏
+        }
+    }
+    
+    /// <summary>
+    /// 显示突变选择
+    /// </summary>
+    public void ShowMutationSelection(CelestialBody body, List<Mutation> mutations)
+    {
+        currentSelectingBody = body;
+        currentMutations = mutations;
+        
+        if (mutationSelectionPanel != null)
+        {
+            mutationSelectionPanel.SetActive(true);
+            Time.timeScale = 0f; // 暂停游戏
+            
+            // 填充突变选项到 UI
+            if (mutations != null && mutations.Count >= 3)
+            {
+                if (mutationText1 != null)
+                    mutationText1.text = $"{mutations[0].mutationName}\n{mutations[0].description}";
+                
+                if (mutationText2 != null)
+                    mutationText2.text = $"{mutations[1].mutationName}\n{mutations[1].description}";
+                
+                if (mutationText3 != null)
+                    mutationText3.text = $"{mutations[2].mutationName}\n{mutations[2].description}";
+            }
+            
+            Debug.Log("显示突变选择界面");
+        }
+    }
+    
+    /// <summary>
+    /// 选择突变
+    /// </summary>
+    public void SelectMutation(int mutationIndex)
+    {
+        if (currentSelectingBody != null && currentMutations != null && mutationIndex < currentMutations.Count)
+        {
+            Mutation selectedMutation = currentMutations[mutationIndex];
+            selectedMutation.ApplyTo(currentSelectingBody);
+            
+            Debug.Log($"应用突变: {selectedMutation.mutationName}");
+        }
+        
+        if (mutationSelectionPanel != null)
+        {
+            mutationSelectionPanel.SetActive(false);
+            Time.timeScale = 1f; // 恢复游戏
+        }
+    }
+    
+    /// <summary>
+    /// 显示操作提示
+    /// </summary>
+    private void ShowControlHints()
+    {
+        if (controlHintText != null)
+        {
+            controlHintText.text = 
+                "操作说明：\n" +
+                "WASD - 移动\n" +
+                "空格 - 冲刺（陨石阶段）\n" +
+                "Shift - 强引力波\n" +
+                "Q - 使用技能";
+        }
+    }
+    
+    /// <summary>
+    /// 切换操作提示显示
+    /// </summary>
+    public void ToggleControlHints()
+    {
+        if (controlHintPanel != null)
+        {
+            controlHintPanel.SetActive(!controlHintPanel.activeSelf);
+        }
+    }
+}

@@ -3,16 +3,20 @@
   "WorkspaceRootPath": "D:\\UnityDate\\Solar3\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{B0B5C795-9876-2C81-F15C-5DBC7ABB0D31}|Assembly-CSharp.csproj|d:\\unitydate\\solar3\\assets\\script\\playercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B0B5C795-9876-2C81-F15C-5DBC7ABB0D31}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\playercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{B0B5C795-9876-2C81-F15C-5DBC7ABB0D31}|Assembly-CSharp.csproj|d:\\unitydate\\solar3\\assets\\script\\uimanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0B5C795-9876-2C81-F15C-5DBC7ABB0D31}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\uimanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B0B5C795-9876-2C81-F15C-5DBC7ABB0D31}|Assembly-CSharp.csproj|D:\\UnityDate\\Solar3\\assets\\script\\asteroidspawner.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B0B5C795-9876-2C81-F15C-5DBC7ABB0D31}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\asteroidspawner.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{B0B5C795-9876-2C81-F15C-5DBC7ABB0D31}|Assembly-CSharp.csproj|D:\\UnityDate\\Solar3\\assets\\script\\playercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0B5C795-9876-2C81-F15C-5DBC7ABB0D31}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\playercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{B0B5C795-9876-2C81-F15C-5DBC7ABB0D31}|Assembly-CSharp.csproj|D:\\UnityDate\\Solar3\\assets\\script\\camerafollow.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B0B5C795-9876-2C81-F15C-5DBC7ABB0D31}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\camerafollow.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0B5C795-9876-2C81-F15C-5DBC7ABB0D31}|Assembly-CSharp.csproj|D:\\UnityDate\\Solar3\\assets\\script\\asteroidspawner.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B0B5C795-9876-2C81-F15C-5DBC7ABB0D31}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\asteroidspawner.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{B0B5C795-9876-2C81-F15C-5DBC7ABB0D31}|Assembly-CSharp.csproj|D:\\UnityDate\\Solar3\\assets\\script\\celestialbody.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -33,10 +37,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{B0B5C795-9876-2C81-F15C-5DBC7ABB0D31}|Assembly-CSharp.csproj|D:\\UnityDate\\Solar3\\assets\\script\\gamemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B0B5C795-9876-2C81-F15C-5DBC7ABB0D31}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\gamemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B0B5C795-9876-2C81-F15C-5DBC7ABB0D31}|Assembly-CSharp.csproj|D:\\UnityDate\\Solar3\\assets\\script\\uimanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B0B5C795-9876-2C81-F15C-5DBC7ABB0D31}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\uimanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\UnityDate\\Solar3\\Assets\\md\\QUICK_SETUP.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|",
@@ -69,6 +69,14 @@
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\UnityDate\\Solar3\\Assets\\md\\MASS_CONFIGURATION.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\md\\MASS_CONFIGURATION.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\UnityDate\\Solar3\\Assets\\md\\CAMERA_JITTER_FIX.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\md\\CAMERA_JITTER_FIX.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0B5C795-9876-2C81-F15C-5DBC7ABB0D31}|Assembly-CSharp.csproj|d:\\unitydate\\solar3\\assets\\md\\ui_setup_guide.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|",
+      "RelativeMoniker": "D:0:0:{B0B5C795-9876-2C81-F15C-5DBC7ABB0D31}|Assembly-CSharp.csproj|solutionrelative:assets\\md\\ui_setup_guide.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|"
     }
   ],
   "DocumentGroupContainers": [
@@ -78,7 +86,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
@@ -86,20 +94,57 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "CameraFollow.cs",
-              "DocumentMoniker": "D:\\UnityDate\\Solar3\\Assets\\Script\\CameraFollow.cs",
-              "RelativeDocumentMoniker": "Assets\\Script\\CameraFollow.cs",
-              "ToolTip": "D:\\UnityDate\\Solar3\\Assets\\Script\\CameraFollow.cs",
-              "RelativeToolTip": "Assets\\Script\\CameraFollow.cs",
-              "ViewState": "AgIAAIUAAAAAAAAAAABUwIoAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-20T17:09:22.886Z",
+              "DocumentIndex": 18,
+              "Title": "UI_SETUP_GUIDE.md",
+              "DocumentMoniker": "D:\\UnityDate\\Solar3\\Assets\\md\\UI_SETUP_GUIDE.md",
+              "RelativeDocumentMoniker": "Assets\\md\\UI_SETUP_GUIDE.md",
+              "ToolTip": "D:\\UnityDate\\Solar3\\Assets\\md\\UI_SETUP_GUIDE.md",
+              "RelativeToolTip": "Assets\\md\\UI_SETUP_GUIDE.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwv8sCAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-01-21T19:11:24.683Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 0,
+              "Title": "UIManager.cs",
+              "DocumentMoniker": "D:\\UnityDate\\Solar3\\Assets\\Script\\UIManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\UIManager.cs",
+              "ToolTip": "D:\\UnityDate\\Solar3\\Assets\\Script\\UIManager.cs",
+              "RelativeToolTip": "Assets\\Script\\UIManager.cs",
+              "ViewState": "AgIAAOAAAAAAAAAAAAAQwBABAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-19T17:45:55.695Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "CAMERA_JITTER_FIX.md",
+              "DocumentMoniker": "D:\\UnityDate\\Solar3\\Assets\\md\\CAMERA_JITTER_FIX.md",
+              "RelativeDocumentMoniker": "Assets\\md\\CAMERA_JITTER_FIX.md",
+              "ToolTip": "D:\\UnityDate\\Solar3\\Assets\\md\\CAMERA_JITTER_FIX.md",
+              "RelativeToolTip": "Assets\\md\\CAMERA_JITTER_FIX.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwv1IBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-01-20T17:26:38.988Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CameraFollow.cs",
+              "DocumentMoniker": "D:\\UnityDate\\Solar3\\Assets\\Script\\CameraFollow.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\CameraFollow.cs",
+              "ToolTip": "D:\\UnityDate\\Solar3\\Assets\\Script\\CameraFollow.cs*",
+              "RelativeToolTip": "Assets\\Script\\CameraFollow.cs*",
+              "ViewState": "AgIAAHUAAAAAAAAAAAAUwH4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-20T17:09:22.886Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
               "Title": "GameManager.cs",
               "DocumentMoniker": "D:\\UnityDate\\Solar3\\Assets\\Script\\GameManager.cs",
               "RelativeDocumentMoniker": "Assets\\Script\\GameManager.cs",
@@ -111,7 +156,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "Mutation.cs",
               "DocumentMoniker": "D:\\UnityDate\\Solar3\\Assets\\Script\\Mutation.cs",
               "RelativeDocumentMoniker": "Assets\\Script\\Mutation.cs",
@@ -123,7 +168,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "CelestialBody.cs",
               "DocumentMoniker": "D:\\UnityDate\\Solar3\\Assets\\Script\\CelestialBody.cs",
               "RelativeDocumentMoniker": "Assets\\Script\\CelestialBody.cs",
@@ -131,18 +176,17 @@
               "RelativeToolTip": "Assets\\Script\\CelestialBody.cs",
               "ViewState": "AgIAAEEAAAAAAAAAAABIwCAAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-19T17:45:53.633Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-19T17:45:53.633Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "PlayerController.cs",
               "DocumentMoniker": "D:\\UnityDate\\Solar3\\Assets\\Script\\PlayerController.cs",
               "RelativeDocumentMoniker": "Assets\\Script\\PlayerController.cs",
               "ToolTip": "D:\\UnityDate\\Solar3\\Assets\\Script\\PlayerController.cs",
               "RelativeToolTip": "Assets\\Script\\PlayerController.cs",
-              "ViewState": "AgIAAMsAAAAAAAAAAAAkwHkAAAANAAAAAAAAAA==",
+              "ViewState": "AgIAAF8AAAAAAAAAAAAIwKMAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-19T17:45:56.034Z",
               "EditorCaption": ""
@@ -161,7 +205,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "AsteroidSpawner.cs",
               "DocumentMoniker": "D:\\UnityDate\\Solar3\\Assets\\Script\\AsteroidSpawner.cs",
               "RelativeDocumentMoniker": "Assets\\Script\\AsteroidSpawner.cs",
@@ -194,18 +238,6 @@
               "ViewState": "AgIAAAAAAAAAAAAAAADwvzQBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
               "WhenOpened": "2026-01-19T19:14:18.653Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "UIManager.cs",
-              "DocumentMoniker": "D:\\UnityDate\\Solar3\\Assets\\Script\\UIManager.cs",
-              "RelativeDocumentMoniker": "Assets\\Script\\UIManager.cs",
-              "ToolTip": "D:\\UnityDate\\Solar3\\Assets\\Script\\UIManager.cs",
-              "RelativeToolTip": "Assets\\Script\\UIManager.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAADwv48AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-19T17:45:55.695Z"
             },
             {
               "$type": "Document",
@@ -245,7 +277,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "Game_Design_Document.md",
               "DocumentMoniker": "D:\\UnityDate\\Solar3\\Assets\\md\\Game_Design_Document.md",
               "RelativeDocumentMoniker": "Assets\\md\\Game_Design_Document.md",
@@ -257,7 +289,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "Solar.cs",
               "DocumentMoniker": "D:\\UnityDate\\Solar3\\Assets\\Script\\Solar.cs",
               "RelativeDocumentMoniker": "Assets\\Script\\Solar.cs",

@@ -1,0 +1,143 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+/// <summary>
+/// UI管理器
+/// </summary>
+public class UIManager : MonoBehaviour
+{
+    public static UIManager Instance { get; private set; }
+    
+    [Header("UI元素")]
+    public Text massText;
+    public Text stageText;
+    public Slider evolutionSlider;
+    
+    [Header("选择界面")]
+    public GameObject branchSelectionPanel;
+    public GameObject mutationSelectionPanel;
+    
+    // 临时存储
+    private CelestialBody currentSelectingBody;
+    
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+    
+    /// <summary>
+    /// 更新质量显示
+    /// </summary>
+    public void UpdateMassDisplay(float currentMass, float nextThreshold)
+    {
+        if (massText != null)
+        {
+            massText.text = $"质量: {currentMass:F1} / {nextThreshold:F0}";
+        }
+        
+        if (evolutionSlider != null)
+        {
+            evolutionSlider.value = currentMass / nextThreshold;
+        }
+    }
+    
+    /// <summary>
+    /// 更新阶段显示
+    /// </summary>
+    public void UpdateStageDisplay(EvolutionStage stage)
+    {
+        if (stageText != null)
+        {
+            stageText.text = GetStageName(stage);
+        }
+    }
+    
+    private string GetStageName(EvolutionStage stage)
+    {
+        switch (stage)
+        {
+            case EvolutionStage.Meteorite: return "陨石";
+            case EvolutionStage.SmallPlanet: return "小行星";
+            case EvolutionStage.Planet: return "行星";
+            case EvolutionStage.Star: return "恒星";
+            case EvolutionStage.RedGiant: return "红巨星";
+            case EvolutionStage.NeutronStar: return "中子星";
+            case EvolutionStage.Pulsar: return "脉冲星";
+            case EvolutionStage.BlackHole: return "黑洞";
+            default: return "未知";
+        }
+    }
+    
+    /// <summary>
+    /// 显示分支选择
+    /// </summary>
+    public void ShowBranchSelection(CelestialBody body)
+    {
+        currentSelectingBody = body;
+        
+        if (branchSelectionPanel != null)
+        {
+            branchSelectionPanel.SetActive(true);
+            Time.timeScale = 0f; // 暂停游戏
+        }
+    }
+    
+    /// <summary>
+    /// 选择行星分支
+    /// </summary>
+    public void SelectBranch(int branchIndex)
+    {
+        if (currentSelectingBody != null)
+        {
+            PlanetBranch branch = (PlanetBranch)(branchIndex + 1); // +1 跳过 None
+            currentSelectingBody.SetPlanetBranch(branch);
+            
+            Debug.Log($"选择了分支: {branch}");
+        }
+        
+        if (branchSelectionPanel != null)
+        {
+            branchSelectionPanel.SetActive(false);
+            Time.timeScale = 1f; // 恢复游戏
+        }
+    }
+    
+    /// <summary>
+    /// 显示突变选择
+    /// </summary>
+    public void ShowMutationSelection(CelestialBody body, List<Mutation> mutations)
+    {
+        currentSelectingBody = body;
+        
+        if (mutationSelectionPanel != null)
+        {
+            mutationSelectionPanel.SetActive(true);
+            Time.timeScale = 0f; // 暂停游戏
+            
+            // TODO: 填充突变选项到UI
+        }
+    }
+    
+    /// <summary>
+    /// 选择突变
+    /// </summary>
+    public void SelectMutation(int mutationIndex)
+    {
+        // TODO: 应用选择的突变
+        
+        if (mutationSelectionPanel != null)
+        {
+            mutationSelectionPanel.SetActive(false);
+            Time.timeScale = 1f; // 恢复游戏
+        }
+    }
+}

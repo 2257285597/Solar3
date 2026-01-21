@@ -166,8 +166,8 @@ MonoBehaviour:
   thrustForce: 10
   dashSpeed: 20
   dashCooldown: 2
-  massImpactOnThrust: 0.02
-  massImpactOnSpeed: 0.04
+  massImpactOnThrust: 0
+  massImpactOnSpeed: 0
   baseSpeedMultiplier: 1.5
   canDash: 1
   canSplit: 0
