@@ -1,0 +1,188 @@
+# Solar 3 快速设置指南
+
+## ?? 5分钟快速开始（3D 项目版本）
+
+> **注意**：本项目在 3D 项目中实现 2D 玩法，使用 3D 物理系统
+
+### 步骤 1: 设置场景
+
+1. 打开 Unity 并创建新的 **3D 场景**（或使用现有 3D 项目）
+2. 保持默认的 Main Camera 和 Directional Light
+
+### 步骤 2: 创建管理器对象
+
+#### A. 设置 Main Camera
+```
+选中 Main Camera
+- 位置: (0, 0, -20)  ← 重要！必须是负数
+- Rotation: (0, 0, 0)
+- Projection: Perspective（保持默认）
+- Field of View: 60
+- 添加组件: CameraFollow
+```
+
+#### B. 创建 GameManager
+```
+GameObject > Create Empty
+- 名称: GameManager
+- 添加组件: GameManager
+- 添加组件: MutationDatabase
+```
+
+#### C. 创建 AsteroidSpawner（可选）
+```
+GameObject > Create Empty
+- 名称: AsteroidSpawner
+- 添加组件: AsteroidSpawner
+```
+
+#### D. 创建 UIManager（可选，暂时不设置UI）
+```
+GameObject > Create Empty
+- 名称: UIManager
+- 添加组件: UIManager
+```
+
+### 步骤 3: 创建预制体
+
+#### 玩家预制体
+```
+1. GameObject > 3D Object > Sphere
+2. 重命名为 "Player"
+3. 设置颜色（可选）：
+   - Project 右键 > Create > Material
+   - 命名 "PlayerMaterial"，设为白色
+   - 拖到 Sphere 上
+4. 添加组件:
+   - PlayerController
+   - Rigidbody
+     * 取消勾选 Use Gravity ?
+     * Linear Drag: 0.5
+     * Angular Drag: 0.5
+     * Constraints:
+       - Freeze Position Z ?
+       - Freeze Rotation X ?
+       - Freeze Rotation Y ?
+       - Freeze Rotation Z ?
+   - Sphere Collider（自动添加）
+5. 拖到 Project 窗口创建预制体
+6. 删除场景中的实例
+```
+
+#### 小行星预制体
+```
+1. GameObject > 3D Object > Sphere
+2. 重命名为 "Asteroid"
+3. 设置颜色为灰色（同上创建 Material）
+4. 缩小 Scale 到 (0.5, 0.5, 0.5)
+5. 添加组件:
+   - CelestialBody
+   - Rigidbody
+     * 取消勾选 Use Gravity ?
+     * Linear Drag: 0.2
+     * Constraints: 同玩家设置
+   - Sphere Collider（自动添加）
+6. 拖到 Project 窗口创建预制体
+7. 删除场景中的实例
+```
+
+### 步骤 4: 连接引用
+
+在 **GameManager** 组件中：
+- `Player Prefab` → 拖入 Player 预制体
+- `Celestial Body Prefab` → 拖入 Asteroid 预制体
+- `Initial Asteroid Count` → 30
+
+在 **AsteroidSpawner** 组件中：
+- `Asteroid Prefab` → 拖入 Asteroid 预制体
+- `Max Asteroids` → 50
+- `Spawn Interval` → 2
+
+### 步骤 5: 检查光源
+
+3D 项目需要光源才能看清物体！
+
+```
+确保场景中有 Directional Light
+（默认就有，如果删除了需要重新创建）
+```
+
+### 步骤 6: 运行游戏！
+
+按下 Play 键，你应该看到：
+- 玩家在中心（白色球体）
+- 周围散布着灰色小行星（球体）
+- 摄像机跟随玩家
+
+## ?? 测试操作
+
+- **WASD** - 移动玩家
+- **空格** - 冲刺
+- **左Shift** - 激活强引力（吸引周围物体）
+- 撞击小的小行星来吞噬它们
+- 观察质量增长和进化
+
+## ?? 常见问题
+
+### 问题：看不到任何物体
+- **检查摄像机 Z 坐标必须是负数**（如 -20）
+- 确保场景中有 Directional Light
+- 调整摄像机距离到 -30 试试
+
+### 问题：玩家不动
+- 检查 Rigidbody 的 Use Gravity 是否已取消勾选
+- 检查是否锁定了 Position Z
+
+### 问题：玩家飞出屏幕（Z 轴方向）
+- 检查 Rigidbody Constraints 是否锁定了 Position Z
+- 确保所有旋转轴都已锁定
+
+### 问题：无法吞噬小行星
+- 确保两个物体都有 Sphere Collider
+- 确保两个物体都有 Rigidbody
+- 检查碰撞层设置（Edit > Project Settings > Physics）
+
+### 问题：小行星不生成
+- 检查 GameManager 的预制体引用
+- 检查 Console 是否有错误
+
+### 问题：引力没效果
+- 在 CelestialBody 组件中确保 Enable Gravity 勾选
+- 调大 Gravity Strength 数值
+
+## ?? 可选：添加星空背景
+
+```
+1. 创建一个大的 Sphere
+2. Scale 设为 (200, 200, 200)
+3. 反转法线（使用专门的 Skybox Shader）
+4. 或使用 Window > Rendering > Lighting Settings 设置 Skybox
+```
+
+## ?? 性能优化建议
+
+如果帧率低：
+1. 减少 Initial Asteroid Count（GameManager）
+2. 减少 Max Asteroids（AsteroidSpawner）
+3. 增加 Spawn Interval
+
+## ? 检查清单
+
+- [ ] Main Camera Z 坐标是负数（如 -20）
+- [ ] Main Camera 有 CameraFollow 组件
+- [ ] GameManager 有两个预制体引用
+- [ ] 玩家预制体有 PlayerController、Rigidbody、SphereCollider
+- [ ] 小行星预制体有 CelestialBody、Rigidbody、SphereCollider
+- [ ] 所有 Rigidbody 的 Use Gravity 取消勾选
+- [ ] 所有 Rigidbody 锁定了 Position Z 和所有 Rotation
+- [ ] 场景中有 Directional Light
+- [ ] 场景中没有遗留的 Player/Asteroid 实例（应该由代码生成）
+
+## ?? 下一步
+
+场景运行成功后，尝试：
+1. 吞噬足够的小行星，观察进化（质量 10 → 小行星，50 → 行星）
+2. 调整 CelestialBody 的参数观察效果
+3. 添加 UI 显示质量和进化进度
+
+完整文档请查看：`Assets/md/README_IMPLEMENTATION.md`

@@ -1,0 +1,55 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+/// <summary>
+/// 摄像机跟随脚本
+/// </summary>
+public class CameraFollow : MonoBehaviour
+{
+    public Transform target;
+    public float smoothSpeed = 5f;
+    public Vector3 offset = new Vector3(0, 0, -10);
+    
+    [Header("动态缩放")]
+    public bool dynamicZoom = true;
+    public float minSize = 5f;
+    public float maxSize = 50f;
+    public float zoomSpeed = 2f;
+    
+    private Camera cam;
+    private float targetSize;
+    
+    private void Start()
+    {
+        cam = GetComponent<Camera>();
+        targetSize = cam.orthographicSize;
+    }
+    
+    private void LateUpdate()
+    {
+        if (target == null) return;
+        
+        // 平滑跟随
+        Vector3 desiredPosition = target.position + offset;
+        Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
+        transform.position = smoothedPosition;
+        
+        // 动态缩放（根据玩家大小）
+        if (dynamicZoom)
+        {
+            CelestialBody body = target.GetComponent<CelestialBody>();
+            if (body != null)
+            {
+                // 根据质量调整摄像机大小
+                targetSize = Mathf.Clamp(5f + Mathf.Log10(body.mass + 1) * 3f, minSize, maxSize);
+                cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, targetSize, zoomSpeed * Time.deltaTime);
+            }
+        }
+    }
+    
+    public void SetTarget(Transform newTarget)
+    {
+        target = newTarget;
+    }
+}

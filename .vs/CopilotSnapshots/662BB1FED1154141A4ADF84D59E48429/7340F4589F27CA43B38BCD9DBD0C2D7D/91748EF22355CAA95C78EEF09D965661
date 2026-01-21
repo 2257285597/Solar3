@@ -1,0 +1,50 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+/// <summary>
+/// Solar 3: Abyss Devourer - 主启动脚本
+/// 单机版核心功能实现
+/// </summary>
+public class Solar : MonoBehaviour
+{
+    [Header("游戏版本")]
+    public string gameVersion = "0.1.0 - 单机原型";
+    
+    [Header("调试信息")]
+    public bool showDebugInfo = true;
+    
+    void Start()
+    {
+        Debug.Log($"=== Solar 3: 星渊吞噬者 ===");
+        Debug.Log($"版本: {gameVersion}");
+        Debug.Log("游戏已启动！");
+        Debug.Log("操作说明：");
+        Debug.Log("- WASD: 移动");
+        Debug.Log("- 空格: 冲刺（陨石阶段）");
+        Debug.Log("- 左Shift: 强引力波");
+        Debug.Log("- Q: 使用技能");
+    }
+    
+    void Update()
+    {
+        // ESC 退出
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+            #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+            #endif
+        }
+    }
+    
+    private void OnGUI()
+    {
+        if (!showDebugInfo) return;
+        
+        GUILayout.BeginArea(new Rect(10, 10, 300, 200));
+        GUILayout.Label($"Solar 3 - {gameVersion}");
+        GUILayout.Label($"FPS: {(1f / Time.deltaTime):F0}");
+        GUILayout.EndArea();
+    }
+}

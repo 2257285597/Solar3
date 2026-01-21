@@ -1,0 +1,180 @@
+﻿# Solar 3: 星渊吞噬者 (Abyss Devourer) - 单机原型
+
+> **重要提示**：本项目在 **3D 项目**中实现 2D 玩法，使用 3D 物理系统（Rigidbody、SphereCollider）
+
+## 已实现功能
+
+### 核心系统
+✅ **天体物理系统** (`CelestialBody.cs`)
+- 基于质量的引力模拟
+- 真实的碰撞检测（3D Physics）
+- 吞噬机制（大吞小）
+- 动态体积缩放
+
+✅ **进化系统**
+- 8个进化阶段：陨石 → 小行星 → 行星 → 恒星 → 红巨星/中子星/脉冲星 → 黑洞
+- 3大行星分支：
+  - 冰封堡垒（防御型）
+  - 生命摇篮（辅助型）
+  - 战争星球（攻击型）
+
+✅ **Roguelike 突变系统** (`Mutation.cs`)
+- 每次升级提供3选1强化
+- 物理类、生态类、科技类、分支专属四大类型
+- 随机构建，每局不同
+
+✅ **玩家控制** (`PlayerController.cs`)
+- WASD移动（基于物理推力）
+- 空格冲刺（陨石阶段）
+- Shift强引力波
+- Q技能释放（根据分支）
+
+✅ **动态环境** (`AsteroidSpawner.cs`)
+- 持续生成小行星
+- 防止场景空荡
+
+✅ **摄像机系统** (`CameraFollow.cs`)
+- 平滑跟随玩家
+- 根据质量动态缩放视野
+
+## Unity 场景设置指南（3D 项目）
+
+### 1. 创建基础场景
+
+1. **主摄像机**
+   - Position: (0, 0, **-20**)  ← 必须是负数！
+   - Rotation: (0, 0, 0)
+   - Projection: Perspective（默认）
+   - 添加 `CameraFollow` 组件
+
+2. **GameManager 空物体**
+   - 添加 `GameManager` 组件
+   - 添加 `MutationDatabase` 组件
+
+3. **Directional Light**
+   - 确保场景有光源（默认就有）
+
+4. **UIManager 空物体**（可选）
+   - 添加 `UIManager` 组件
+   - 创建 Canvas 作为子物体
+
+### 2. 创建预制体 (Prefabs)
+
+#### 玩家预制体 (Player)
+```
+GameObject → 3D Object → Sphere
+- 名称: Player
+- 组件:
+  - PlayerController
+  - Rigidbody
+    * Use Gravity: 取消勾选 ✓
+    * Linear Drag: 0.5
+    * Constraints:
+      - Freeze Position Z ✓
+      - Freeze Rotation X/Y/Z ✓
+  - Sphere Collider（自动添加）
+  - Material: 白色（可选）
+```
+
+#### 小行星预制体 (Asteroid)
+```
+GameObject → 3D Object → Sphere
+- 名称: Asteroid
+- Scale: (0.5, 0.5, 0.5)
+- 组件:
+  - CelestialBody
+  - Rigidbody
+    * Use Gravity: 取消勾选 ✓
+    * Linear Drag: 0.2
+    * Constraints: 同玩家
+  - Sphere Collider（自动添加）
+  - Material: 灰色（可选）
+```
+
+### 3. 连接引用
+
+在 GameManager 组件中：
+- `Player Prefab` → 拖入玩家预制体
+- `Celestial Body Prefab` → 拖入小行星预制体
+- `Initial Asteroid Count` → 30
+
+### 4. UI 设置（可选）
+
+在 Canvas 下创建：
+```
+- Text (massText) → "质量: 0"
+- Text (stageText) → "陨石"
+- Slider (evolutionSlider)
+- Panel (branchSelectionPanel) → 包含3个按钮
+- Panel (mutationSelectionPanel) → 包含3个按钮
+```
+
+连接到 UIManager。
+
+## 操作说明
+
+- **WASD** - 施加推力移动
+- **空格** - 冲刺（陨石阶段，有CD）
+- **左Shift** - 激活强引力波（按住）
+- **Q** - 使用分支技能
+- **ESC** - 退出游戏
+
+## 游戏流程
+
+1. 以陨石身份开始（质量 1）
+2. 撞击并吞噬小行星增加质量
+3. 质量达到阈值触发进化
+4. 进化到行星阶段时选择三大分支之一
+5. 后续每次进化获得3选1的突变强化
+6. 最终目标：进化为黑洞
+
+## 下一步开发计划
+
+### 近期
+- [ ] UI界面完善（分支/突变选择面板）
+- [ ] 技能系统实现（冰封、生命、战争）
+- [ ] 粒子特效（进化、吞噬、技能）
+- [ ] 音效系统
+
+### 中期
+- [ ] 中立生物（商船、海盗）
+- [ ] 宇宙灾难（伽马暴、暗物质风暴）
+- [ ] 更多突变选项
+- [ ] 恒星阶段细分（红巨星/中子星/脉冲星）
+
+### 远期
+- [ ] 多人联机
+- [ ] 宇宙大逃杀模式（缩圈机制）
+- [ ] 星系争霸团队模式
+- [ ] 皮肤系统
+
+## 技术要点
+
+- **Unity 版本**: 2020.3 或更高
+- **.NET 版本**: .NET Framework 4.7.1
+- **物理系统**: 3D Physics（不是 Physics 2D）
+- **组件**: Rigidbody、SphereCollider（不是 2D 版本）
+- **Time.timeScale**: 选择界面时会暂停（=0）
+
+## 调试建议
+
+1. 开启 Gizmos 可看到引力范围（绿色圆圈）
+2. `Solar.cs` 中 `showDebugInfo` 显示 FPS
+3. 碰撞层设置：确保所有天体在同一层
+4. 如果吞噬不触发，检查 Collider 和 Rigidbody 设置
+5. **摄像机必须在负 Z 坐标**（如 -20）
+
+## 3D vs 2D 对比
+
+| 组件 | 2D 项目 | 3D 项目（本项目）|
+|------|---------|-----------------|
+| 物体 | Sprite Circle | Sphere |
+| 物理 | Rigidbody2D | Rigidbody |
+| 碰撞 | CircleCollider2D | SphereCollider |
+| 渲染 | SpriteRenderer | MeshRenderer |
+| 约束 | 无需锁定 Z | 必须锁定 Position Z |
+
+## 联系方式
+
+查看完整设计文档：`Assets/md/Game_Design_Document.md`  
+快速设置指南：`Assets/md/QUICK_SETUP.md`

@@ -1,0 +1,193 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+/// <summary>
+/// 玩家控制器
+/// </summary>
+public class PlayerController : CelestialBody
+{
+    [Header("控制设置")]
+    public float moveSpeed = 5f;
+    public float thrustForce = 10f;
+    public float dashSpeed = 20f;
+    public float dashCooldown = 2f;
+    
+    [Header("技能")]
+    public bool canDash = true;
+    public bool canSplit = false; // 陨石阶段的分裂技能
+    public float strongGravityMultiplier = 3f;
+    
+    private float lastDashTime = -999f;
+    private bool isStrongGravityActive = false;
+    
+    // 输入
+    private Vector2 moveInput;
+    
+    protected override void Start()
+    {
+        base.Start();
+        
+        // 玩家默认开始为陨石
+        currentStage = EvolutionStage.Meteorite;
+        mass = 1f;
+        massToNextEvolution = 10f;
+        
+        // 摄像机跟随
+        Camera.main.GetComponent<CameraFollow>()?.SetTarget(transform);
+    }
+    
+    protected override void FixedUpdate()
+    {
+        base.FixedUpdate();
+        
+        HandleMovement();
+    }
+    
+    private void Update()
+    {
+        // 获取输入
+        moveInput.x = Input.GetAxisRaw("Horizontal");
+        moveInput.y = Input.GetAxisRaw("Vertical");
+        
+        // 冲刺（陨石阶段）
+        if (Input.GetKeyDown(KeyCode.Space) && currentStage == EvolutionStage.Meteorite)
+        {
+            TryDash();
+        }
+        
+        // 强引力波（按住）
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            ActivateStrongGravity();
+        }
+        else
+        {
+            DeactivateStrongGravity();
+        }
+        
+        // 技能释放（根据分支不同）
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            UseAbility();
+        }
+    }
+    
+    /// <summary>
+    /// 处理移动
+    /// </summary>
+    private void HandleMovement()
+    {
+        if (moveInput.magnitude > 0.1f)
+        {
+            Vector2 moveForce = moveInput.normalized * thrustForce;
+            
+            // 根据质量调整移动力度（质量越大越难转向）
+            float mobilityFactor = 1f / Mathf.Sqrt(mass);
+            rb.AddForce(moveForce * mobilityFactor);
+        }
+        
+        // 限制最大速度
+        float maxSpeed = moveSpeed / Mathf.Log10(mass + 10);
+        if (rb.velocity.magnitude > maxSpeed)
+        {
+            rb.velocity = rb.velocity.normalized * maxSpeed;
+        }
+    }
+    
+    /// <summary>
+    /// 尝试冲刺
+    /// </summary>
+    private void TryDash()
+    {
+        if (!canDash) return;
+        if (Time.time - lastDashTime < dashCooldown) return;
+        
+        Vector2 dashDirection = moveInput.magnitude > 0.1f ? moveInput.normalized : Vector2.right;
+        rb.AddForce(dashDirection * dashSpeed * mass, ForceMode2D.Impulse);
+        
+        lastDashTime = Time.time;
+        
+        Debug.Log("冲刺！");
+    }
+    
+    /// <summary>
+    /// 激活强引力波
+    /// </summary>
+    private void ActivateStrongGravity()
+    {
+        if (!isStrongGravityActive)
+        {
+            isStrongGravityActive = true;
+            gravityStrength *= strongGravityMultiplier;
+        }
+    }
+    
+    /// <summary>
+    /// 停用强引力波
+    /// </summary>
+    private void DeactivateStrongGravity()
+    {
+        if (isStrongGravityActive)
+        {
+            isStrongGravityActive = false;
+            gravityStrength /= strongGravityMultiplier;
+        }
+    }
+    
+    /// <summary>
+    /// 使用技能
+    /// </summary>
+    private void UseAbility()
+    {
+        switch (planetBranch)
+        {
+            case PlanetBranch.IceFortress:
+                // 极寒光环 - 减速周围敌人
+                UseIceAura();
+                break;
+            case PlanetBranch.LifeCradle:
+                // 文明反击 - 发射导弹
+                UseCivilizationCounterattack();
+                break;
+            case PlanetBranch.WarPlanet:
+                // 轨道轰炸
+                UseOrbitalBombardment();
+                break;
+        }
+    }
+    
+    private void UseIceAura()
+    {
+        Debug.Log("释放极寒光环！");
+        // TODO: 实现减速效果
+    }
+    
+    private void UseCivilizationCounterattack()
+    {
+        Debug.Log("发射文明导弹！");
+        // TODO: 生成导弹
+    }
+    
+    private void UseOrbitalBombardment()
+    {
+        Debug.Log("轨道轰炸！");
+        // TODO: 发射高能粒子流
+    }
+    
+    public override void AddMass(float amount)
+    {
+        base.AddMass(amount);
+        
+        // UI 更新
+        UIManager.Instance?.UpdateMassDisplay(mass, massToNextEvolution);
+    }
+    
+    protected override void TriggerEvolution()
+    {
+        base.TriggerEvolution();
+        
+        // 播放进化特效
+        Debug.Log($"玩家进化至: {currentStage}！");
+    }
+}

@@ -1,0 +1,397 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+/// <summary>
+/// 天体基类 - 所有星体的核心组件
+/// </summary>
+[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(SphereCollider))]
+public class CelestialBody : MonoBehaviour
+{
+    [Header("天体属性")]
+    public float mass = 1f; // 质量
+    public EvolutionStage currentStage = EvolutionStage.Meteorite;
+    public PlanetBranch planetBranch = PlanetBranch.None; // 行星分支
+    
+    [Header("物理属性")]
+    public float gravityRange = 5f; // 引力范围
+    public float gravityStrength = 10f; // 引力强度
+    public bool enableGravity = true; // 是否启用引力
+    
+    [Header("视觉属性")]
+    public float baseRadius = 0.5f; // 基础半径
+    
+    // 组件引用
+    protected Rigidbody rb;
+    protected SphereCollider sphereCollider;
+    
+    // 卫星系统
+    protected List<CelestialBody> satellites = new List<CelestialBody>();
+    public int maxSatellites = 3;
+    
+    // 进化相关
+    public float massToNextEvolution = 10f;
+    
+    // 事件
+    public System.Action<EvolutionStage> OnEvolution;
+    public System.Action<float> OnMassChanged;
+    
+    protected virtual void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+        sphereCollider = GetComponent<SphereCollider>();
+        
+        // 配置 Rigidbody
+        if (rb != null)
+        {
+            rb.useGravity = false; // 禁用 Unity 内置引力
+            rb.constraints = RigidbodyConstraints.FreezePositionZ | 
+                            RigidbodyConstraints.FreezeRotationX | 
+                            RigidbodyConstraints.FreezeRotationY | 
+                            RigidbodyConstraints.FreezeRotationZ; // 锁定 Z 轴和旋转
+        }
+        
+        UpdatePhysicalProperties();
+    }
+    
+    protected virtual void Start()
+    {
+        UpdateVisuals();
+    }
+    
+    protected virtual void FixedUpdate()
+    {
+        if (enableGravity)
+        {
+            ApplyGravityToNearbyObjects();
+        }
+    }
+    
+    /// <summary>
+    /// 吞噬其他天体
+    /// </summary>
+    public virtual bool Devour(CelestialBody other)
+    {
+        if (other == null || other == this) return false;
+        
+        // 只能吞噬质量小于自己的物体
+        if (other.mass >= mass * 0.8f) return false;
+        
+        // 增加质量
+        AddMass(other.mass);
+        
+        // 销毁被吞噬的物体
+        Destroy(other.gameObject);
+        
+        return true;
+    }
+    
+    /// <summary>
+    /// 增加质量
+    /// </summary>
+    public virtual void AddMass(float amount)
+    {
+        mass += amount;
+        OnMassChanged?.Invoke(mass);
+        
+        UpdatePhysicalProperties();
+        UpdateVisuals();
+        
+        // 检查是否可以进化
+        CheckEvolution();
+    }
+    
+    /// <summary>
+    /// 更新物理属性
+    /// </summary>
+    public virtual void UpdatePhysicalProperties()
+    {
+        // 根据质量更新半径（立方根关系）
+        float radius = baseRadius * Mathf.Pow(mass, 0.33f);
+        transform.localScale = Vector3.one * radius * 2; // 直径
+        
+        // 更新碰撞体
+        if (sphereCollider != null)
+        {
+            sphereCollider.radius = 0.5f; // 基于 scale
+        }
+        
+        // 更新刚体质量
+        if (rb != null)
+        {
+            rb.mass = mass;
+        }
+        
+        // 更新引力范围
+        gravityRange = radius * 3f + 2f;
+        gravityStrength = mass * 2f;
+    }
+    
+    /// <summary>
+    /// 更新视觉表现
+    /// </summary>
+    protected virtual void UpdateVisuals()
+    {
+        Renderer renderer = GetComponent<Renderer>();
+        if (renderer != null)
+        {
+            // 根据阶段改变颜色
+            renderer.material.color = GetStageColor();
+        }
+    }
+    
+    /// <summary>
+    /// 获取阶段对应的颜色
+    /// </summary>
+    protected Color GetStageColor()
+    {
+        switch (currentStage)
+        {
+            case EvolutionStage.Meteorite:
+                return Color.gray;
+            case EvolutionStage.SmallPlanet:
+                return new Color(0.7f, 0.7f, 0.7f);
+            case EvolutionStage.Planet:
+                return GetPlanetBranchColor();
+            case EvolutionStage.Star:
+                return Color.yellow;
+            case EvolutionStage.RedGiant:
+                return new Color(1f, 0.3f, 0.3f);
+            case EvolutionStage.NeutronStar:
+                return Color.cyan;
+            case EvolutionStage.Pulsar:
+                return new Color(0.5f, 1f, 1f);
+            case EvolutionStage.BlackHole:
+                return new Color(0.1f, 0.1f, 0.2f);
+            default:
+                return Color.white;
+        }
+    }
+    
+    /// <summary>
+    /// 获取行星分支颜色
+    /// </summary>
+    protected Color GetPlanetBranchColor()
+    {
+        switch (planetBranch)
+        {
+            case PlanetBranch.IceFortress:
+                return new Color(0.6f, 0.8f, 1f); // 冰蓝色
+            case PlanetBranch.LifeCradle:
+                return new Color(0.3f, 0.8f, 0.3f); // 生命绿
+            case PlanetBranch.WarPlanet:
+                return new Color(0.9f, 0.3f, 0.2f); // 战争红
+            default:
+                return new Color(0.6f, 0.6f, 0.8f);
+        }
+    }
+    
+    /// <summary>
+    /// 检查并触发进化
+    /// </summary>
+    protected virtual void CheckEvolution()
+    {
+        if (mass >= massToNextEvolution)
+        {
+            TriggerEvolution();
+        }
+    }
+    
+    /// <summary>
+    /// 触发进化
+    /// </summary>
+    protected virtual void TriggerEvolution()
+    {
+        EvolutionStage nextStage = GetNextEvolutionStage();
+        
+        if (nextStage != currentStage)
+        {
+            currentStage = nextStage;
+            massToNextEvolution = GetNextEvolutionThreshold();
+            
+            OnEvolution?.Invoke(currentStage);
+            
+            // 如果进化到行星阶段且没有分支，触发分支选择
+            if (currentStage == EvolutionStage.Planet && planetBranch == PlanetBranch.None)
+            {
+                GameManager.Instance?.ShowPlanetBranchSelection(this);
+            }
+            else
+            {
+                // 其他阶段触发突变选择
+                GameManager.Instance?.ShowMutationSelection(this);
+            }
+            
+            UpdateVisuals();
+            Debug.Log($"进化至: {currentStage}");
+        }
+    }
+    
+    /// <summary>
+    /// 获取下一进化阶段
+    /// </summary>
+    protected EvolutionStage GetNextEvolutionStage()
+    {
+        switch (currentStage)
+        {
+            case EvolutionStage.Meteorite:
+                return EvolutionStage.SmallPlanet;
+            case EvolutionStage.SmallPlanet:
+                return EvolutionStage.Planet;
+            case EvolutionStage.Planet:
+                return EvolutionStage.Star;
+            case EvolutionStage.Star:
+                return EvolutionStage.RedGiant; // 可以根据分支选择不同的恒星类型
+            case EvolutionStage.RedGiant:
+            case EvolutionStage.NeutronStar:
+            case EvolutionStage.Pulsar:
+                return EvolutionStage.BlackHole;
+            default:
+                return currentStage;
+        }
+    }
+    
+    /// <summary>
+    /// 获取下一进化阈值
+    /// </summary>
+    protected float GetNextEvolutionThreshold()
+    {
+        switch (currentStage)
+        {
+            case EvolutionStage.Meteorite:
+                return 10f;
+            case EvolutionStage.SmallPlanet:
+                return 50f;
+            case EvolutionStage.Planet:
+                return 200f;
+            case EvolutionStage.Star:
+                return 500f;
+            case EvolutionStage.RedGiant:
+            case EvolutionStage.NeutronStar:
+            case EvolutionStage.Pulsar:
+                return 1000f;
+            default:
+                return float.MaxValue;
+        }
+    }
+    
+    /// <summary>
+    /// 对周围物体施加引力
+    /// </summary>
+    protected virtual void ApplyGravityToNearbyObjects()
+    {
+        Collider[] nearbyObjects = Physics.OverlapSphere(transform.position, gravityRange);
+        
+        foreach (Collider col in nearbyObjects)
+        {
+            if (col.gameObject == gameObject) continue;
+            
+            Rigidbody otherRb = col.GetComponent<Rigidbody>();
+            CelestialBody otherBody = col.GetComponent<CelestialBody>();
+            
+            if (otherRb != null && otherBody != null)
+            {
+                // 计算引力
+                Vector3 direction = transform.position - col.transform.position;
+                float distance = direction.magnitude;
+                
+                if (distance < 0.1f) continue; // 避免除零
+                
+                // 万有引力公式简化版：F = G * m1 * m2 / r^2
+                float forceMagnitude = gravityStrength * otherBody.mass / (distance * distance);
+                Vector3 force = direction.normalized * forceMagnitude;
+                
+                otherRb.AddForce(force);
+            }
+        }
+    }
+    
+    /// <summary>
+    /// 碰撞检测
+    /// </summary>
+    protected virtual void OnCollisionEnter(Collision collision)
+    {
+        CelestialBody other = collision.gameObject.GetComponent<CelestialBody>();
+        
+        if (other != null)
+        {
+            // 大吞小
+            if (mass > other.mass)
+            {
+                Devour(other);
+            }
+            else
+            {
+                // 计算碰撞伤害（暂时不实现生命系统，只做吞噬）
+            }
+        }
+    }
+    
+    /// <summary>
+    /// 设置行星分支
+    /// </summary>
+    public void SetPlanetBranch(PlanetBranch branch)
+    {
+        planetBranch = branch;
+        ApplyBranchBonus();
+        UpdateVisuals();
+    }
+    
+    /// <summary>
+    /// 应用分支加成
+    /// </summary>
+    protected virtual void ApplyBranchBonus()
+    {
+        switch (planetBranch)
+        {
+            case PlanetBranch.IceFortress:
+                // 冰封堡垒：高防御
+                maxSatellites += 2;
+                break;
+            case PlanetBranch.LifeCradle:
+                // 生命摇篮：高回复
+                maxSatellites += 3;
+                break;
+            case PlanetBranch.WarPlanet:
+                // 战争星球：高攻击
+                gravityStrength *= 1.5f;
+                break;
+        }
+    }
+    
+    /// <summary>
+    /// 绘制引力范围（调试用）
+    /// </summary>
+    protected virtual void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, gravityRange);
+    }
+}
+
+/// <summary>
+/// 进化阶段
+/// </summary>
+public enum EvolutionStage
+{
+    Meteorite,      // 陨石
+    SmallPlanet,    // 小行星
+    Planet,         // 行星
+    Star,           // 恒星
+    RedGiant,       // 红巨星
+    NeutronStar,    // 中子星
+    Pulsar,         // 脉冲星
+    BlackHole       // 黑洞
+}
+
+/// <summary>
+/// 行星分支
+/// </summary>
+public enum PlanetBranch
+{
+    None,
+    IceFortress,    // 冰封堡垒
+    LifeCradle,     // 生命摇篮
+    WarPlanet       // 战争星球
+}

@@ -1,0 +1,100 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+/// <summary>
+/// 摄像机跟随脚本 - 支持 2D 和 3D 项目
+/// </summary>
+public class CameraFollow : MonoBehaviour
+{
+    public Transform target;
+    public float smoothSpeed = 5f;
+    
+    [Header("基础距离设置")]
+    [Tooltip("基础 Z 偏移（负数）")]
+    public float baseZOffset = -20f;
+    
+    [Header("动态缩放")]
+    [Tooltip("启用根据玩家质量/体积动态调整距离")]
+    public bool dynamicZoom = true;
+    [Tooltip("最小距离（离玩家最近）")]
+    public float minDistance = 10f;
+    [Tooltip("最大距离（离玩家最远）")]
+    public float maxDistance = 100f;
+    [Tooltip("距离调整速度")]
+    public float zoomSpeed = 3f;
+    [Tooltip("距离缩放倍率（越大相机退得越远）")]
+    public float distanceMultiplier = 2.0f;
+    
+    private Camera cam;
+    private float targetDistance;
+    private bool isPerspective;
+    
+    private void Start()
+    {
+        cam = GetComponent<Camera>();
+        
+        // 检测相机类型
+        isPerspective = !cam.orthographic;
+        
+        // 初始化目标距离
+        if (isPerspective)
+        {
+            targetDistance = Mathf.Abs(baseZOffset);
+        }
+        else
+        {
+            targetDistance = cam.orthographicSize;
+        }
+    }
+    
+    private void LateUpdate()
+    {
+        if (target == null) return;
+        
+        // 动态缩放：根据玩家质量调整距离
+        if (dynamicZoom)
+        {
+            CelestialBody body = target.GetComponent<CelestialBody>();
+            if (body != null)
+            {
+                UpdateCameraDistance(body);
+            }
+        }
+        
+        // 平滑跟随位置
+        Vector3 offset = new Vector3(0, 0, isPerspective ? -targetDistance : baseZOffset);
+        Vector3 desiredPosition = target.position + offset;
+        Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
+        transform.position = smoothedPosition;
+    }
+    
+    /// <summary>
+    /// 根据天体质量更新相机距离
+    /// </summary>
+    private void UpdateCameraDistance(CelestialBody body)
+    {
+        if (isPerspective)
+        {
+            // 3D 透视相机：调整 Z 距离
+            // 公式：距离 = 基础距离 + (体积半径 × 倍率)
+            float bodyRadius = body.transform.localScale.x / 2f; // 天体半径
+            float desiredDistance = Mathf.Max(minDistance, bodyRadius * distanceMultiplier + 10f);
+            
+            // 平滑插值并限制范围
+            targetDistance = Mathf.Clamp(desiredDistance, minDistance, maxDistance);
+        }
+        else
+        {
+            // 2D 正交相机：调整 Orthographic Size
+            float desiredSize = 5f + Mathf.Log10(body.mass + 1) * 3f;
+            targetDistance = Mathf.Clamp(desiredSize, minDistance, maxDistance);
+            cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, targetDistance, zoomSpeed * Time.deltaTime);
+        }
+    }
+    
+    public void SetTarget(Transform newTarget)
+    {
+        target = newTarget;
+    }
+}

@@ -1,0 +1,165 @@
+﻿# Solar 3 快速设置指南
+
+## ?? 5分钟快速开始
+
+### 步骤 1: 设置场景
+
+1. 打开 Unity 并创建新的 2D 场景
+2. 删除默认的 Main Camera（我们会用自己的）
+
+### 步骤 2: 创建管理器对象
+
+#### A. 创建 Main Camera
+```
+GameObject > Camera
+- 名称: Main Camera
+- Tag: MainCamera
+- 位置: (0, 0, -10)
+- Projection: Orthographic
+- Size: 10
+- 添加组件: CameraFollow
+```
+
+#### B. 创建 GameManager
+```
+GameObject > Create Empty
+- 名称: GameManager
+- 添加组件: GameManager
+- 添加组件: MutationDatabase
+```
+
+#### C. 创建 AsteroidSpawner
+```
+GameObject > Create Empty
+- 名称: AsteroidSpawner
+- 添加组件: AsteroidSpawner
+```
+
+#### D. 创建 UIManager（可选，暂时不设置UI）
+```
+GameObject > Create Empty
+- 名称: UIManager
+- 添加组件: UIManager
+```
+
+### 步骤 3: 创建预制体
+
+#### 玩家预制体
+```
+1. GameObject > 2D Object > Sprites > Circle
+2. 重命名为 "Player"
+3. 设置颜色为白色（Inspector > Sprite Renderer > Color）
+4. 添加组件:
+   - PlayerController
+   - Rigidbody2D
+     * Body Type: Dynamic
+     * Gravity Scale: 0
+     * Linear Drag: 0.5
+     * Angular Drag: 0.5
+   - Circle Collider 2D
+     * Radius: 0.5
+5. 拖到 Project 窗口创建预制体
+6. 删除场景中的实例
+```
+
+#### 小行星预制体
+```
+1. GameObject > 2D Object > Sprites > Circle
+2. 重命名为 "Asteroid"
+3. 设置颜色为灰色
+4. 缩小 Scale 到 (0.5, 0.5, 1)
+5. 添加组件:
+   - CelestialBody
+   - Rigidbody2D
+     * Body Type: Dynamic
+     * Gravity Scale: 0
+     * Linear Drag: 0.2
+   - Circle Collider 2D
+     * Radius: 0.5
+6. 拖到 Project 窗口创建预制体
+7. 删除场景中的实例
+```
+
+### 步骤 4: 连接引用
+
+在 **GameManager** 组件中：
+- `Player Prefab` → 拖入 Player 预制体
+- `Celestial Body Prefab` → 拖入 Asteroid 预制体
+- `Initial Asteroid Count` → 30
+
+在 **AsteroidSpawner** 组件中：
+- `Asteroid Prefab` → 拖入 Asteroid 预制体
+- `Max Asteroids` → 50
+- `Spawn Interval` → 2
+
+### 步骤 5: 添加启动脚本（可选）
+
+创建一个空物体并添加 `Solar.cs` 脚本，用于显示调试信息。
+
+### 步骤 6: 运行游戏！
+
+按下 Play 键，你应该看到：
+- 玩家在中心（白色圆圈）
+- 周围散布着灰色小行星
+- 摄像机跟随玩家
+
+## ?? 测试操作
+
+- **WASD** - 移动玩家
+- **空格** - 冲刺
+- **左Shift** - 激活强引力（吸引周围物体）
+- 撞击小的小行星来吞噬它们
+- 观察质量增长和进化
+
+## ?? 常见问题
+
+### 问题：玩家不动
+- 检查 Rigidbody2D 的 Body Type 是否为 Dynamic
+- 检查 Gravity Scale 是否为 0
+
+### 问题：无法吞噬小行星
+- 确保两个物体都有 Circle Collider 2D
+- 确保两个物体都有 Rigidbody2D
+- 检查碰撞层设置（Edit > Project Settings > Physics 2D）
+
+### 问题：小行星不生成
+- 检查 GameManager 的预制体引用
+- 检查 Console 是否有错误
+
+### 问题：引力没效果
+- 在 CelestialBody 组件中确保 Enable Gravity 勾选
+- 调大 Gravity Strength 数值
+
+## ?? 可选：添加背景
+
+```
+GameObject > 2D Object > Sprite
+- 使用黑色方块
+- 设置为非常大的 Scale (100, 100, 1)
+- Sorting Layer: 设为最底层
+```
+
+## ?? 性能优化建议
+
+如果帧率低：
+1. 减少 Initial Asteroid Count（GameManager）
+2. 减少 Max Asteroids（AsteroidSpawner）
+3. 增加 Spawn Interval
+
+## ? 检查清单
+
+- [ ] Main Camera 有 CameraFollow 组件
+- [ ] GameManager 有两个预制体引用
+- [ ] 玩家预制体有 PlayerController、Rigidbody2D、CircleCollider2D
+- [ ] 小行星预制体有 CelestialBody、Rigidbody2D、CircleCollider2D
+- [ ] 所有 Rigidbody2D 的 Gravity Scale = 0
+- [ ] 场景中没有遗留的 Player/Asteroid 实例（应该由代码生成）
+
+## ?? 下一步
+
+场景运行成功后，尝试：
+1. 吞噬足够的小行星，观察进化（质量 10 → 小行星，50 → 行星）
+2. 调整 CelestialBody 的参数观察效果
+3. 添加 UI 显示质量和进化进度
+
+完整文档请查看：`Assets/md/README_IMPLEMENTATION.md`
