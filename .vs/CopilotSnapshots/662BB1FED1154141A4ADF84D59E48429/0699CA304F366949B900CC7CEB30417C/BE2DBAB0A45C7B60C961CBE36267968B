@@ -1,63 +1,50 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Íæ¼Ò¿ØÖÆÆ÷
+/// ç©å®¶æ§åˆ¶å™¨
 /// </summary>
 public class PlayerController : CelestialBody
 {
-    [Header("¿ØÖÆÉèÖÃ")]
+    [Header("æ§åˆ¶è®¾ç½®")]
     public float moveSpeed = 5f;
     public float thrustForce = 10f;
     public float dashSpeed = 20f;
     public float dashCooldown = 2f;
     
-    [Header("ÒÆ¶¯Æ½ºâ")]
-    [Tooltip("ÖÊÁ¿¶ÔÒÆ¶¯Á¦µÄÓ°Ïì³Ì¶È£¨0-1£¬Ô½Ğ¡Ó°ÏìÔ½Ğ¡£©")]
-    public float massImpactOnThrust = 0.15f;  // ´Ó 0.3 ½µµÍµ½ 0.15
-    [Tooltip("ÖÊÁ¿¶Ô×î´óËÙ¶ÈµÄÓ°Ïì³Ì¶È£¨0-1£¬Ô½Ğ¡Ó°ÏìÔ½Ğ¡£©")]
-    public float massImpactOnSpeed = 0.1f;  // ´Ó 0.2 ½µµÍµ½ 0.1
-    [Tooltip("»ù´¡ËÙ¶È±¶ÂÊ£¨Ô½´óÕûÌåÒÆ¶¯Ô½¿ì£©")]
-    public float baseSpeedMultiplier = 2.5f;  // ´Ó 1.5 Ìá¸ßµ½ 2.5
-    [Tooltip("ÍÆÁ¦²¹³¥±¶ÂÊ£¨Ô½´ó´óÖÊÁ¿Ê±¼ÓËÙÔ½¿ì£©")]
+    [Header("ç§»åŠ¨å¹³è¡¡")]
+    [Tooltip("è´¨é‡å¯¹ç§»åŠ¨åŠ›çš„å½±å“ç¨‹åº¦ï¼ˆ0-1ï¼Œè¶Šå°å½±å“è¶Šå°ï¼‰")]
+    public float massImpactOnThrust = 0.15f;  // ä» 0.3 é™ä½åˆ° 0.15
+    [Tooltip("è´¨é‡å¯¹æœ€å¤§é€Ÿåº¦çš„å½±å“ç¨‹åº¦ï¼ˆ0-1ï¼Œè¶Šå°å½±å“è¶Šå°ï¼‰")]
+    public float massImpactOnSpeed = 0.1f;  // ä» 0.2 é™ä½åˆ° 0.1
+    [Tooltip("åŸºç¡€é€Ÿåº¦å€ç‡ï¼ˆè¶Šå¤§æ•´ä½“ç§»åŠ¨è¶Šå¿«ï¼‰")]
+    public float baseSpeedMultiplier = 2.5f;  // ä» 1.5 æé«˜åˆ° 2.5
+    [Tooltip("æ¨åŠ›è¡¥å¿å€ç‡ï¼ˆè¶Šå¤§å¤§è´¨é‡æ—¶åŠ é€Ÿè¶Šå¿«ï¼‰")]
     public float thrustCompensationMultiplier = 0.8f;
     
-    [Header("¼¼ÄÜ")]
+    [Header("æŠ€èƒ½")]
     public bool canDash = true;
-    public bool canSplit = false; // ÔÉÊ¯½×¶ÎµÄ·ÖÁÑ¼¼ÄÜ
+    public bool canSplit = false; // é™¨çŸ³é˜¶æ®µçš„åˆ†è£‚æŠ€èƒ½
     public float strongGravityMultiplier = 3f;
     
     private float lastDashTime = -999f;
     private bool isStrongGravityActive = false;
     
-    // ÊäÈë
+    // è¾“å…¥
     private Vector2 moveInput;
     
     protected override void Start()
     {
         base.Start();
         
-        // Íæ¼ÒÄ¬ÈÏ¿ªÊ¼ÎªÔÉÊ¯
+        // ç©å®¶é»˜è®¤å¼€å§‹ä¸ºé™¨çŸ³
         currentStage = EvolutionStage.Meteorite;
         mass = 1f;
         massToNextEvolution = 10f;
         
-        // Á¢¼´¸üĞÂÎïÀíÊôĞÔºÍÊÓ¾õ
-        UpdatePhysicalProperties();
-        UpdateVisuals();
-        
-        // Á¢¼´¸üĞÂ UI ÏÔÊ¾
-        if (UIManager.Instance != null)
-        {
-            UIManager.Instance.UpdateMassDisplay(mass, massToNextEvolution);
-            UIManager.Instance.UpdateStageDisplay(currentStage);
-        }
-        
-        // ÉãÏñ»ú¸úËæ
+        // æ‘„åƒæœºè·Ÿéš
         Camera.main.GetComponent<CameraFollow>()?.SetTarget(transform);
-        
-        Debug.Log($"Íæ¼Ò³õÊ¼»¯Íê³É£ºÖÊÁ¿={mass}, ½×¶Î={currentStage}");
     }
     
     protected override void FixedUpdate()
@@ -69,23 +56,23 @@ public class PlayerController : CelestialBody
     
     private void Update()
     {
-        // »ñÈ¡ÊäÈë
+        // è·å–è¾“å…¥
         moveInput.x = Input.GetAxisRaw("Horizontal");
         moveInput.y = Input.GetAxisRaw("Vertical");
         
-        // ¸üĞÂËÙ¶ÈÏÔÊ¾
+        // æ›´æ–°é€Ÿåº¦æ˜¾ç¤º
         if (rb != null)
         {
             UIManager.Instance?.UpdateVelocityDisplay(rb.velocity.magnitude);
         }
         
-        // ³å´Ì£¨ÔÉÊ¯½×¶Î£©
+        // å†²åˆºï¼ˆé™¨çŸ³é˜¶æ®µï¼‰
         if (Input.GetKeyDown(KeyCode.Space) && currentStage == EvolutionStage.Meteorite)
         {
             TryDash();
         }
         
-        // Ç¿ÒıÁ¦²¨£¨°´×¡£©
+        // å¼ºå¼•åŠ›æ³¢ï¼ˆæŒ‰ä½ï¼‰
         if (Input.GetKey(KeyCode.LeftShift))
         {
             ActivateStrongGravity();
@@ -95,13 +82,13 @@ public class PlayerController : CelestialBody
             DeactivateStrongGravity();
         }
         
-        // ¼¼ÄÜÊÍ·Å£¨¸ù¾İ·ÖÖ§²»Í¬£©
+        // æŠ€èƒ½é‡Šæ”¾ï¼ˆæ ¹æ®åˆ†æ”¯ä¸åŒï¼‰
         if (Input.GetKeyDown(KeyCode.Q))
         {
             UseAbility();
         }
         
-        // ÇĞ»»²Ù×÷ÌáÊ¾£¨°´ H ¼ü£©
+        // åˆ‡æ¢æ“ä½œæç¤ºï¼ˆæŒ‰ H é”®ï¼‰
         if (Input.GetKeyDown(KeyCode.H))
         {
             UIManager.Instance?.ToggleControlHints();
@@ -109,7 +96,7 @@ public class PlayerController : CelestialBody
     }
     
     /// <summary>
-    /// ´¦ÀíÒÆ¶¯
+    /// å¤„ç†ç§»åŠ¨
     /// </summary>
     private void HandleMovement()
     {
@@ -117,24 +104,24 @@ public class PlayerController : CelestialBody
         {
             Vector3 moveForce = new Vector3(moveInput.x, moveInput.y, 0) * thrustForce;
             
-            // ÓÅ»¯µÄÒÆ¶¯Á¦¶È¼ÆËã£ºÖÊÁ¿Ó°Ïì´ó·ù¼õÈõ
+            // ä¼˜åŒ–çš„ç§»åŠ¨åŠ›åº¦è®¡ç®—ï¼šè´¨é‡å½±å“å¤§å¹…å‡å¼±
             float mobilityFactor = 1f / Mathf.Pow(mass, massImpactOnThrust);
             
-            // ÖÊÁ¿Ô½´ó£¬¸øÓè¸ü¶àµÄÍÆÁ¦²¹³¥
-            // Ê¹ÓÃ¸ü¼¤½øµÄ²¹³¥¹«Ê½£¬ÈÃ´óÖÊÁ¿Ò²ÄÜ¿ìËÙÒÆ¶¯
+            // è´¨é‡è¶Šå¤§ï¼Œç»™äºˆæ›´å¤šçš„æ¨åŠ›è¡¥å¿
+            // ä½¿ç”¨æ›´æ¿€è¿›çš„è¡¥å¿å…¬å¼ï¼Œè®©å¤§è´¨é‡ä¹Ÿèƒ½å¿«é€Ÿç§»åŠ¨
             float massCompensation = 1f + Mathf.Log10(mass + 1) * thrustCompensationMultiplier;
             
-            // Ìí¼Ó½×¶Î¼Ó³É£ºĞĞĞÇ¼°ÒÔÉÏ½×¶ÎÒÆ¶¯¸ü¿ì
+            // æ·»åŠ é˜¶æ®µåŠ æˆï¼šè¡Œæ˜ŸåŠä»¥ä¸Šé˜¶æ®µç§»åŠ¨æ›´å¿«
             float stageBonus = GetStageMovementBonus();
             
             rb.AddForce(moveForce * mobilityFactor * massCompensation * stageBonus);
         }
         
-        // ÓÅ»¯µÄ×î´óËÙ¶È¼ÆËã£º´ó·ù¼õÉÙÖÊÁ¿Ó°Ïì
+        // ä¼˜åŒ–çš„æœ€å¤§é€Ÿåº¦è®¡ç®—ï¼šå¤§å¹…å‡å°‘è´¨é‡å½±å“
         float speedPenalty = Mathf.Pow(mass, massImpactOnSpeed);
         float maxSpeed = (moveSpeed * baseSpeedMultiplier) / speedPenalty;
         
-        // Ìá¸ß×îµÍËÙ¶È±£ÕÏ£¨´Ó 0.3 Ìá¸ßµ½ 0.6£©
+        // æé«˜æœ€ä½é€Ÿåº¦ä¿éšœï¼ˆä» 0.3 æé«˜åˆ° 0.6ï¼‰
         maxSpeed = Mathf.Max(maxSpeed, moveSpeed * 0.6f);
         
         if (rb.velocity.magnitude > maxSpeed)
@@ -144,33 +131,33 @@ public class PlayerController : CelestialBody
     }
     
     /// <summary>
-    /// »ñÈ¡½×¶ÎÒÆ¶¯¼Ó³É
+    /// è·å–é˜¶æ®µç§»åŠ¨åŠ æˆ
     /// </summary>
     private float GetStageMovementBonus()
     {
         switch (currentStage)
         {
             case EvolutionStage.Meteorite:
-                return 1.0f;  // ÔÉÊ¯£ºÕı³£ËÙ¶È
+                return 1.0f;  // é™¨çŸ³ï¼šæ­£å¸¸é€Ÿåº¦
             case EvolutionStage.SmallPlanet:
-                return 1.1f;  // Ğ¡ĞĞĞÇ£º+10% ËÙ¶È
+                return 1.1f;  // å°è¡Œæ˜Ÿï¼š+10% é€Ÿåº¦
             case EvolutionStage.Planet:
-                return 1.3f;  // ĞĞĞÇ£º+30% ËÙ¶È£¨ÖØÒª£¡£©
+                return 1.3f;  // è¡Œæ˜Ÿï¼š+30% é€Ÿåº¦ï¼ˆé‡è¦ï¼ï¼‰
             case EvolutionStage.Star:
-                return 1.5f;  // ºãĞÇ£º+50% ËÙ¶È
+                return 1.5f;  // æ’æ˜Ÿï¼š+50% é€Ÿåº¦
             case EvolutionStage.RedGiant:
             case EvolutionStage.NeutronStar:
             case EvolutionStage.Pulsar:
-                return 1.7f;  // ¸ß¼¶½×¶Î£º+70% ËÙ¶È
+                return 1.7f;  // é«˜çº§é˜¶æ®µï¼š+70% é€Ÿåº¦
             case EvolutionStage.BlackHole:
-                return 2.0f;  // ºÚ¶´£º+100% ËÙ¶È£¨³¬¿ì£©
+                return 2.0f;  // é»‘æ´ï¼š+100% é€Ÿåº¦ï¼ˆè¶…å¿«ï¼‰
             default:
                 return 1.0f;
         }
     }
     
     /// <summary>
-    /// ³¢ÊÔ³å´Ì
+    /// å°è¯•å†²åˆº
     /// </summary>
     private void TryDash()
     {
@@ -181,17 +168,17 @@ public class PlayerController : CelestialBody
             ? new Vector3(moveInput.x, moveInput.y, 0).normalized 
             : Vector3.right;
         
-        // ³å´ÌÁ¦¶ÈËæÖÊÁ¿Ëõ·Å£¬µ«Ìí¼Ó»ù´¡Öµ±£Ö¤Ğ¡ÖÊÁ¿Ê±Ò²ÓĞĞ§
+        // å†²åˆºåŠ›åº¦éšè´¨é‡ç¼©æ”¾ï¼Œä½†æ·»åŠ åŸºç¡€å€¼ä¿è¯å°è´¨é‡æ—¶ä¹Ÿæœ‰æ•ˆ
         float dashForce = dashSpeed * Mathf.Max(mass, 5f);
         rb.AddForce(dashDirection * dashForce, ForceMode.Impulse);
         
         lastDashTime = Time.time;
         
-        Debug.Log($"³å´Ì£¡£¨ÖÊÁ¿: {mass:F1}£©");
+        Debug.Log($"å†²åˆºï¼ï¼ˆè´¨é‡: {mass:F1}ï¼‰");
     }
     
     /// <summary>
-    /// ¼¤»îÇ¿ÒıÁ¦²¨
+    /// æ¿€æ´»å¼ºå¼•åŠ›æ³¢
     /// </summary>
     private void ActivateStrongGravity()
     {
@@ -203,7 +190,7 @@ public class PlayerController : CelestialBody
     }
     
     /// <summary>
-    /// Í£ÓÃÇ¿ÒıÁ¦²¨
+    /// åœç”¨å¼ºå¼•åŠ›æ³¢
     /// </summary>
     private void DeactivateStrongGravity()
     {
@@ -215,22 +202,22 @@ public class PlayerController : CelestialBody
     }
     
     /// <summary>
-    /// Ê¹ÓÃ¼¼ÄÜ
+    /// ä½¿ç”¨æŠ€èƒ½
     /// </summary>
     private void UseAbility()
     {
         switch (planetBranch)
         {
             case PlanetBranch.IceFortress:
-                // ¼«º®¹â»· - ¼õËÙÖÜÎ§µĞÈË
+                // æå¯’å…‰ç¯ - å‡é€Ÿå‘¨å›´æ•Œäºº
                 UseIceAura();
                 break;
             case PlanetBranch.LifeCradle:
-                // ÎÄÃ÷·´»÷ - ·¢Éäµ¼µ¯
+                // æ–‡æ˜åå‡» - å‘å°„å¯¼å¼¹
                 UseCivilizationCounterattack();
                 break;
             case PlanetBranch.WarPlanet:
-                // ¹ìµÀºäÕ¨
+                // è½¨é“è½°ç‚¸
                 UseOrbitalBombardment();
                 break;
         }
@@ -238,27 +225,27 @@ public class PlayerController : CelestialBody
     
     private void UseIceAura()
     {
-        Debug.Log("ÊÍ·Å¼«º®¹â»·£¡");
-        // TODO: ÊµÏÖ¼õËÙĞ§¹û
+        Debug.Log("é‡Šæ”¾æå¯’å…‰ç¯ï¼");
+        // TODO: å®ç°å‡é€Ÿæ•ˆæœ
     }
     
     private void UseCivilizationCounterattack()
     {
-        Debug.Log("·¢ÉäÎÄÃ÷µ¼µ¯£¡");
-        // TODO: Éú³Éµ¼µ¯
+        Debug.Log("å‘å°„æ–‡æ˜å¯¼å¼¹ï¼");
+        // TODO: ç”Ÿæˆå¯¼å¼¹
     }
     
     private void UseOrbitalBombardment()
     {
-        Debug.Log("¹ìµÀºäÕ¨£¡");
-        // TODO: ·¢Éä¸ßÄÜÁ£×ÓÁ÷
+        Debug.Log("è½¨é“è½°ç‚¸ï¼");
+        // TODO: å‘å°„é«˜èƒ½ç²’å­æµ
     }
     
     public override void AddMass(float amount)
     {
         base.AddMass(amount);
         
-        // UI ¸üĞÂ
+        // UI æ›´æ–°
         UIManager.Instance?.UpdateMassDisplay(mass, massToNextEvolution);
     }
     
@@ -266,10 +253,10 @@ public class PlayerController : CelestialBody
     {
         base.TriggerEvolution();
         
-        // ¸üĞÂ UI ÏÔÊ¾
+        // æ›´æ–° UI æ˜¾ç¤º
         UIManager.Instance?.UpdateStageDisplay(currentStage);
         
-        // ²¥·Å½ø»¯ÌØĞ§
-        Debug.Log($"Íæ¼Ò½ø»¯ÖÁ: {currentStage}£¡");
+        // æ’­æ”¾è¿›åŒ–ç‰¹æ•ˆ
+        Debug.Log($"ç©å®¶è¿›åŒ–è‡³: {currentStage}ï¼");
     }
 }

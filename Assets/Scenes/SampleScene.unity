@@ -1682,8 +1682,8 @@ MonoBehaviour:
   maxAsteroids: 100
   spawnInterval: 2
   spawnDistance: 30
-  minMass: 0.3
-  maxMass: 3
+  minMass: 0.5
+  maxMass: 1.5
 --- !u!4 &828515803
 Transform:
   m_ObjectHideFlags: 0

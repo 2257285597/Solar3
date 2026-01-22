@@ -146,7 +146,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94c7c35e0d4c5ad4282f249d0566efd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 2
+  mass: 1
   currentStage: 0
   planetBranch: 0
   evolutionToSmallPlanet: 10
@@ -169,6 +169,7 @@ MonoBehaviour:
   massImpactOnThrust: 0
   massImpactOnSpeed: 0
   baseSpeedMultiplier: 1.5
+  thrustCompensationMultiplier: 0.8
   canDash: 1
   canSplit: 0
   strongGravityMultiplier: 3

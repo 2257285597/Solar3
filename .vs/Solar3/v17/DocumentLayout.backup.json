@@ -3,11 +3,11 @@
   "WorkspaceRootPath": "D:\\UnityDate\\Solar3\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{B0B5C795-9876-2C81-F15C-5DBC7ABB0D31}|Assembly-CSharp.csproj|d:\\unitydate\\solar3\\assets\\script\\uimanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{B0B5C795-9876-2C81-F15C-5DBC7ABB0D31}|Assembly-CSharp.csproj|D:\\UnityDate\\Solar3\\assets\\script\\uimanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B0B5C795-9876-2C81-F15C-5DBC7ABB0D31}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\uimanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B0B5C795-9876-2C81-F15C-5DBC7ABB0D31}|Assembly-CSharp.csproj|D:\\UnityDate\\Solar3\\assets\\script\\playercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{B0B5C795-9876-2C81-F15C-5DBC7ABB0D31}|Assembly-CSharp.csproj|d:\\unitydate\\solar3\\assets\\script\\playercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B0B5C795-9876-2C81-F15C-5DBC7ABB0D31}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\playercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -75,8 +75,16 @@
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\md\\CAMERA_JITTER_FIX.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B0B5C795-9876-2C81-F15C-5DBC7ABB0D31}|Assembly-CSharp.csproj|d:\\unitydate\\solar3\\assets\\md\\ui_setup_guide.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|",
-      "RelativeMoniker": "D:0:0:{B0B5C795-9876-2C81-F15C-5DBC7ABB0D31}|Assembly-CSharp.csproj|solutionrelative:assets\\md\\ui_setup_guide.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\UnityDate\\Solar3\\Assets\\md\\UI_SETUP_GUIDE.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\md\\UI_SETUP_GUIDE.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0B5C795-9876-2C81-F15C-5DBC7ABB0D31}|Assembly-CSharp.csproj|d:\\unitydate\\solar3\\assets\\md\\startup_bugs_fix.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|",
+      "RelativeMoniker": "D:0:0:{B0B5C795-9876-2C81-F15C-5DBC7ABB0D31}|Assembly-CSharp.csproj|solutionrelative:assets\\md\\startup_bugs_fix.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B0B5C795-9876-2C81-F15C-5DBC7ABB0D31}|Assembly-CSharp.csproj|d:\\unitydate\\solar3\\assets\\md\\changelog.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|",
+      "RelativeMoniker": "D:0:0:{B0B5C795-9876-2C81-F15C-5DBC7ABB0D31}|Assembly-CSharp.csproj|solutionrelative:assets\\md\\changelog.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|"
     }
   ],
   "DocumentGroupContainers": [
@@ -86,11 +94,37 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "CHANGELOG.md",
+              "DocumentMoniker": "D:\\UnityDate\\Solar3\\Assets\\md\\CHANGELOG.md",
+              "RelativeDocumentMoniker": "Assets\\md\\CHANGELOG.md",
+              "ToolTip": "D:\\UnityDate\\Solar3\\Assets\\md\\CHANGELOG.md",
+              "RelativeToolTip": "Assets\\md\\CHANGELOG.md",
+              "ViewState": "AgIAAMgBAAAAAAAAAABAwDACAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-01-22T19:42:33.135Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "STARTUP_BUGS_FIX.md",
+              "DocumentMoniker": "D:\\UnityDate\\Solar3\\Assets\\md\\STARTUP_BUGS_FIX.md",
+              "RelativeDocumentMoniker": "Assets\\md\\STARTUP_BUGS_FIX.md",
+              "ToolTip": "D:\\UnityDate\\Solar3\\Assets\\md\\STARTUP_BUGS_FIX.md",
+              "RelativeToolTip": "Assets\\md\\STARTUP_BUGS_FIX.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwv5gBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-01-22T19:35:52.637Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -102,8 +136,7 @@
               "RelativeToolTip": "Assets\\md\\UI_SETUP_GUIDE.md",
               "ViewState": "AgIAAAAAAAAAAAAAAADwv8sCAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
-              "WhenOpened": "2026-01-21T19:11:24.683Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-21T19:11:24.683Z"
             },
             {
               "$type": "Document",
@@ -113,22 +146,10 @@
               "RelativeDocumentMoniker": "Assets\\Script\\UIManager.cs",
               "ToolTip": "D:\\UnityDate\\Solar3\\Assets\\Script\\UIManager.cs",
               "RelativeToolTip": "Assets\\Script\\UIManager.cs",
-              "ViewState": "AgIAAOAAAAAAAAAAAAAQwBABAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAN8AAAAAAAAAAAAQwO0AAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-19T17:45:55.695Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 17,
-              "Title": "CAMERA_JITTER_FIX.md",
-              "DocumentMoniker": "D:\\UnityDate\\Solar3\\Assets\\md\\CAMERA_JITTER_FIX.md",
-              "RelativeDocumentMoniker": "Assets\\md\\CAMERA_JITTER_FIX.md",
-              "ToolTip": "D:\\UnityDate\\Solar3\\Assets\\md\\CAMERA_JITTER_FIX.md",
-              "RelativeToolTip": "Assets\\md\\CAMERA_JITTER_FIX.md",
-              "ViewState": "AgIAAAAAAAAAAAAAAADwv1IBAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
-              "WhenOpened": "2026-01-20T17:26:38.988Z"
             },
             {
               "$type": "Document",
@@ -186,10 +207,22 @@
               "RelativeDocumentMoniker": "Assets\\Script\\PlayerController.cs",
               "ToolTip": "D:\\UnityDate\\Solar3\\Assets\\Script\\PlayerController.cs",
               "RelativeToolTip": "Assets\\Script\\PlayerController.cs",
-              "ViewState": "AgIAAF8AAAAAAAAAAAAIwKMAAAANAAAAAAAAAA==",
+              "ViewState": "AgIAAGsAAAAAAAAAAABIwHsAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-19T17:45:56.034Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "CAMERA_JITTER_FIX.md",
+              "DocumentMoniker": "D:\\UnityDate\\Solar3\\Assets\\md\\CAMERA_JITTER_FIX.md",
+              "RelativeDocumentMoniker": "Assets\\md\\CAMERA_JITTER_FIX.md",
+              "ToolTip": "D:\\UnityDate\\Solar3\\Assets\\md\\CAMERA_JITTER_FIX.md",
+              "RelativeToolTip": "Assets\\md\\CAMERA_JITTER_FIX.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwv1IBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-01-20T17:26:38.988Z"
             },
             {
               "$type": "Document",
@@ -211,9 +244,10 @@
               "RelativeDocumentMoniker": "Assets\\Script\\AsteroidSpawner.cs",
               "ToolTip": "D:\\UnityDate\\Solar3\\Assets\\Script\\AsteroidSpawner.cs",
               "RelativeToolTip": "Assets\\Script\\AsteroidSpawner.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAhAAAAAAAAAA==",
+              "ViewState": "AgIAAFAAAAAAAAAAAABAwAsAAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-19T17:46:22.906Z"
+              "WhenOpened": "2026-01-19T17:46:22.906Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
