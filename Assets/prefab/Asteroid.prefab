@@ -157,7 +157,7 @@ MonoBehaviour:
   gravityRange: 5
   gravityStrength: 10
   enableGravity: 1
-  devourThreshold: 0.477
+  devourThreshold: 0.8
   baseRadius: 0.5
   showMassLabel: 0
   maxSatellites: 3

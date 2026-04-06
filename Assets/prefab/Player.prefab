@@ -150,10 +150,10 @@ MonoBehaviour:
   currentStage: 0
   planetBranch: 0
   evolutionToSmallPlanet: 10
-  evolutionToPlanet: 50
-  evolutionToStar: 200
-  evolutionToAdvanced: 500
-  evolutionToBlackHole: 1000
+  evolutionToPlanet: 30
+  evolutionToStar: 70
+  evolutionToAdvanced: 100
+  evolutionToBlackHole: 150
   gravityRange: 5
   gravityStrength: 10
   enableGravity: 1
@@ -166,10 +166,8 @@ MonoBehaviour:
   thrustForce: 10
   dashSpeed: 20
   dashCooldown: 2
-  massImpactOnThrust: 0
-  massImpactOnSpeed: 0
   baseSpeedMultiplier: 1.5
-  thrustCompensationMultiplier: 0.8
+  massSpeedGrowth: 0.8
   canDash: 1
   canSplit: 0
   strongGravityMultiplier: 3

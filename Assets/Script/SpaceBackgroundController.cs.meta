@@ -3,7 +3,9 @@ guid: ee6e70577eeeee542b217d4a11a9fe95
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - tiledBackgroundTexture: {fileID: 2800000, guid: 726fc62ed72441b4aa751468c7dcc7ae,
+      type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

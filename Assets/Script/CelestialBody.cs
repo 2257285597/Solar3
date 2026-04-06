@@ -255,21 +255,55 @@ public class CelestialBody : MonoBehaviour
             massToNextEvolution = GetNextEvolutionThreshold();
             
             OnEvolution?.Invoke(currentStage);
-            
-            // 如果进化到行星阶段且没有分支，触发分支选择
-            if (currentStage == EvolutionStage.Planet && planetBranch == PlanetBranch.None)
+
+            bool isPlayerControlled = this is PlayerController;
+            if (isPlayerControlled)
             {
-                GameManager.Instance?.ShowPlanetBranchSelection(this);
+                // 只有玩家进化时才弹出选择 UI
+                if (currentStage == EvolutionStage.Planet && planetBranch == PlanetBranch.None)
+                {
+                    GameManager.Instance?.ShowPlanetBranchSelection(this);
+                }
+                else
+                {
+                    GameManager.Instance?.ShowMutationSelection(this);
+                }
             }
             else
             {
-                // 其他阶段触发突变选择
-                GameManager.Instance?.ShowMutationSelection(this);
+                // 非玩家天体走自动随机逻辑，不打断玩家流程
+                if (currentStage == EvolutionStage.Planet && planetBranch == PlanetBranch.None)
+                {
+                    SetRandomPlanetBranch();
+                }
+                else
+                {
+                    ApplyRandomMutation();
+                }
             }
             
             UpdateVisuals();
             Debug.Log($"进化至: {currentStage}");
         }
+    }
+
+    private void SetRandomPlanetBranch()
+    {
+        PlanetBranch randomBranch = (PlanetBranch)Random.Range(1, 4);
+        SetPlanetBranch(randomBranch);
+        Debug.Log($"{gameObject.name} 自动选择分支: {randomBranch}");
+    }
+
+    private void ApplyRandomMutation()
+    {
+        if (MutationDatabase.Instance == null) return;
+
+        List<Mutation> randomMutations = MutationDatabase.Instance.GetRandomMutations(1, this);
+        if (randomMutations == null || randomMutations.Count == 0) return;
+
+        Mutation selectedMutation = randomMutations[0];
+        selectedMutation.ApplyTo(this);
+        Debug.Log($"{gameObject.name} 自动获得突变: {selectedMutation.mutationName}");
     }
     
     /// <summary>
